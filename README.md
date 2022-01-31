@@ -17,10 +17,10 @@ A Python based app that replicates the functionality of the existing [Tabcmd com
 
 ## Why Tabcmd2?
 
-* Run Tabcmd commands on MacOS (existing Tabcmd does not officially support MacOS)
+* Add support for MacOS
 * Authenticate using Personal Access Tokens (existing Tabcmd does not support Personal Access Token login)
-* Easily use public endpoints available in Python based [Tableau Server Client](https://github.com/tableau/server-client-python/)
-* Add more functionality and extend script for other automation tasks
+* Use public endpoints available in Python based [Tableau Server Client](https://github.com/tableau/server-client-python/)
+* Easier future development to add more functionality 
 
 ## Demo/Samples
 
@@ -34,7 +34,6 @@ This section describes how to install and configure Tabcmd2.
 
 To work with Tabcmd2, you need the following:
 
-* MacOS / Windows
 * Python 3.7+ installed
 
 ### Installation
@@ -55,53 +54,10 @@ To run Tabcmd2, follow these steps:
          [server_name] --site [site_name]`
         * `tabcmd2 createproject --name [project_name]`
 
-### Available Commands
+## Packaging
+pip install pyinstaller
+pyinstaller tabcmd.py --clean --noconfirm
 
-This table lists the development status of all commands, listed in the same order as the tabcmd help.
-
-These are the column definitions:
-
-* TSC: API support is available in [TSC](https://github.com/tableau/server-client-python/)
-* Completed: Code implemented, manually tested, unit tests for parsing added
-* Done: Error handling, all unit tests, logging, code review, can produce docs, merged into master
-
-| Command | TSC | Completed | Done | Notes |
-|-|-|-|-|-|
-| addusers (to group) | Yes (single user) | :heavy_check_mark: |  |  |
-| createextracts | Yes |  |  |  |
-| creategroup | Yes | :heavy_check_mark:  |  |  |
-| createproject | Yes | :heavy_check_mark:  |  |  |
-| createsite | Yes | :heavy_check_mark:  |  |  |
-| createsiteusers | Yes | :heavy_check_mark:  |  |  |
-| createusers | Yes (single user) | :heavy_check_mark:  |  |  |
-| decryptextracts | Yes |  |  |  |
-| delete workbook-name or datasource-name | Yes | :heavy_check_mark:  |  |  |
-| deleteextracts | Yes |  |  |  |
-| deletegroup | Yes | :heavy_check_mark:  |  |  |
-| deleteproject | Yes | :heavy_check_mark:  |  |  |
-| deletesite | Yes | :heavy_check_mark:  |  |  |
-| deletesiteusers | Yes | :heavy_check_mark:  |  |  |
-| deleteusers | No |  |  |  |
-| editdomain | No |  |  |  |
-| editsite | Yes | :heavy_check_mark:  |  |  |
-| encryptextracts | Yes |  |  |  |
-| export | Yes | :heavy_check_mark:  |  |  |
-| get url | Yes |  |  |  |
-| initialuser | No |  |  |  |
-| listdomains | No |  |  |  |
-| listsites | Yes | :heavy_check_mark:  |  |  |
-| login | Yes | :heavy_check_mark:  |  |  |
-| logout | Yes | :heavy_check_mark:  |  |  |
-| publish | Yes | :heavy_check_mark:  |  |  |
-| publishsamples | No |  |  |  |
-| reencryptextracts | Yes |  |  |  |
-| refreshextracts | No |  |  |  |
-| removeusers | Yes | :heavy_check_mark:  |  |  |
-| reset_openid_sub | No |  |  |  |
-| runschedule | No |  |  |  |
-| set | No |  |  |  |
-| syncgroup | No |  |  |  |
-| version | N/A |  |  |  |
 
 ## Contributions
 
