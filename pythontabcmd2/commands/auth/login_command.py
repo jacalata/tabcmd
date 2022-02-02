@@ -13,13 +13,8 @@ class LoginCommand(Commands):
         self.args = args
         self.logger = log('pythontabcmd2.login_command', self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        args = LoginParser.login_parser()
-        return cls(args)
-
-    def run_command(self):
-        self.create_session_login_command(self.args)
+    def run_command(self, args):
+        self.create_session_login_command(args)
 
     def create_session_login_command(self, args):
         """ Method to authenticate user and establish connection """

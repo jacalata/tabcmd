@@ -1,4 +1,4 @@
-from .parser_config import *
+from .parent_parser import *
 class DeleteExtractsParser:
     """
     Parser for the command delete extracts

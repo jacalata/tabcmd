@@ -3,7 +3,6 @@ from .. import Constants
 import tableauserverclient as TSC
 from .. import log
 import os
-from .. import LogoutParser
 from ... import Session
 
 
@@ -16,12 +15,8 @@ class LogoutCommand:
         self.logging_level = args.logging_level
         self.logger = log('pythontabcmd2.logout_command', self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        args = LogoutParser.logout_parser()
-        return cls(args)
 
-    def run_command(self):
+    def run_command(self, args):
         self.logout()
 
     def logout(self):

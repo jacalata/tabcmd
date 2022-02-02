@@ -1,6 +1,6 @@
+# TODO: could probably get rid of this by using typings
+
 class CommandStrategyInterface:
-    def parse(self):
-        pass
 
     def run_command(self):
         pass

@@ -1,5 +1,5 @@
 from venv import create
-from .parser_config import *
+from .parent_parser import *
 
 
 class CreateProjectParser():
