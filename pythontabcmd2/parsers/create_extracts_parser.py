@@ -1,25 +1,13 @@
-import argparse
-import sys
-from .global_options import *
-from .parent_parser import ParentParser
-from .common_parser import CommonParser
-
+from .parser_config import *
 
 class CreateExtractsParser:
     """
-    Parser for createextracts command
+    Parser for parser.xtracts command
     """
     @staticmethod
-    def create_extracts_parser():
-        """Method to parse create extracts arguments passed by the user"""
-        parent_parser = ParentParser()
-        parser = parent_parser.parent_parser_with_global_options()
-        common_parser_obj = CommonParser()
-        common_parser = common_parser_obj.common_parser_arguments()
-        subparsers = parser.add_subparsers()
-        create_extract_parser = subparsers.add_parser('createextracts',
-                                                      parents=[parser,
-                                                               common_parser])
+    def create_extracts_parser(subparsers, command):
+
+        create_extract_parser = subparsers.include(command)
         create_extract_parser.add_argument('--datasource', '-d',
                                            help='name of datasource')
         create_extract_parser.add_argument('--embedded-datasources',
@@ -28,7 +16,7 @@ class CreateExtractsParser:
                                                 'names within the target'
                                                 ' workbook. ')
         create_extract_parser.add_argument('--encrypt',
-                                           help='Create encrypted extract')
+                                           help='parser.encrypted extract')
         create_extract_parser.add_argument('--include-all',
                                            help='Include all embedded data '
                                                 'sources within target'
@@ -47,7 +35,4 @@ class CreateExtractsParser:
                                            help='The name of the target '
                                                 'workbook for extract '
                                                 'creation.')
-        args = create_extract_parser.parse_args(sys.argv[2:])
-        if args.site is None or args.site == "Default":
-            args.site = ''
-        return args
+

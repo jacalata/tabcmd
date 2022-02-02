@@ -1,25 +1,12 @@
-import sys
-from .parent_parser import ParentParser
-
-
+from .parser_config import *
 class ListSitesParser:
     """
     Parser to list sites
     """
     @staticmethod
-    def list_site_parser():
+    def list_site_parser(subparsers, command):
         """Method to parse list sites arguments passed by the user"""
-        parent_parser = ParentParser()
-        parser = parent_parser.parent_parser_with_global_options()
-        subparsers = parser.add_subparsers()
-        edit_site_parser = subparsers.add_parser('listsites',
-                                                 parents=[parser])
-        edit_site_parser.add_argument('--extract-encryption-mode',
-                                      default=None,
-                                      help='The extract encryption mode for '
-                                           'the site can be enforced, '
-                                           'enabled or disabled')
-        args = edit_site_parser.parse_args(sys.argv[2:])
-        if args.site is None or args.site == "Default":
-            args.site = ''
-        return args
+
+
+        list_sites_parsers = subparsers.include(command)
+        set_encryption_option(list_sites_parsers)

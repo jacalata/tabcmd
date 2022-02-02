@@ -1,21 +1,14 @@
-import argparse
-import sys
-from .parent_parser import ParentParser
-from .common_parser import CommonParser
-
+from .parser_config import *
 
 class ExportParser:
     """
     Parser for the command export
     """
     @staticmethod
-    def export_parser():
+    def export_parser(subparsers, command):
         """Method to parse export arguments passed by the user"""
-        parent_parser = ParentParser()
-        parser = parent_parser.parent_parser_with_global_options()
-        subparsers = parser.add_subparsers()
-        export_parser = subparsers.add_parser('export',
-                                              parents=[parser])
+
+        export_parser = subparsers.include(command)
         export_parser_group = export_parser.add_mutually_exclusive_group(
             required=True)
         export_parser_group.add_argument('--pdf', action='store_true',
@@ -43,10 +36,6 @@ class ExportParser:
                                         'is 600 px')
         export_parser.add_argument('--filter', '-vf', metavar='COLUMN:VALUE',
                                    help='View filter to apply to the view')
-        args = export_parser.parse_args(sys.argv[3:])
-        url = sys.argv[2]
-        if args.site is None or args.site == "Default":
-            args.site = ''
-        return args, url
+
 
 # TODO: ARGUMENT --COMPLETE

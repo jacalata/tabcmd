@@ -1,24 +1,11 @@
-import argparse
-import sys
-from .global_options import *
-from .parent_parser import ParentParser
-
+from .parser_config import *
 
 class CreateGroupParser:
     """
     Parser for creategroup command
     """
     @staticmethod
-    def create_group_parser():
+    def create_group_parser(subparsers, command):
         """Method to parse create group arguments passed by the user"""
-        parent_parser = ParentParser()
-        parser = parent_parser.parent_parser_with_global_options()
-        subparsers = parser.add_subparsers()
-        create_group_parser = subparsers.add_parser('creategroup',
-                                                    parents=[parser])
-        create_group_parser.add_argument('--name', '-n',
-                                         required=True, help='name of group')
-        args = create_group_parser.parse_args(sys.argv[2:])
-        if args.site is None or args.site == "Default":
-            args.site = ''
-        return args
+        create_group_parser = subparsers.include(command)
+        create_group_parser.add_argument('groupname', help='name of group')
