@@ -2,7 +2,7 @@ from ..commands import Commands
 import tableauserverclient as TSC
 from .. import log
 from ... import Session
-from pythontabcmd2.commands.user.user_data import user_data
+from .user_data import *
 
 
 class RemoveUserCommand():
@@ -31,8 +31,8 @@ class RemoveUserCommand():
         user_obj_list = command.get_user(csv_lines)
         for user_obj in user_obj_list:
             username = user_obj.username
-            user_id = user_data.find_user_id(server, username)
-            group = user_data.find_group(server, group_name)
+            user_id = find_user_id(server, username)
+            group = find_group(server, group_name)
             try:
                 server.groups.remove_user(group, user_id)
                 self.logger.info("Successfully removed")

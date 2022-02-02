@@ -1,7 +1,6 @@
 import tableauserverclient as TSC
 from .. import log
 from ... import Session
-from .. import GetUrlParser
 import sys
 from .datasources_and_workbooks_command import DatasourcesAndWorkbooks
 
@@ -18,14 +17,10 @@ class GetUrl(DatasourcesAndWorkbooks):
         self.logger = log('pythontabcmd2.get_url_command',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        args, url = GetUrlParser.get_url_parser()
-        return cls(args, url)
 
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
-        server_object = session.create_session(self.args)
+        server_object = session.create_session(args)
         self.get_url(server_object)
 
     def evaluate_file_name(self, file_name, url):

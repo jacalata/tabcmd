@@ -1,6 +1,5 @@
 import tableauserverclient as TSC
 from .. import log
-from ...parsers.create_site_parser import CreateSiteParser
 from .site_command import SiteCommand
 from ... import Session
 
@@ -19,14 +18,10 @@ class CreateSiteCommand(SiteCommand):
         self.logger = log('pythontabcmd2.create_site_command',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        args, admin_mode = CreateSiteParser.create_site_parser()
-        return cls(args, admin_mode)
 
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
-        server_object = session.create_session(self.args)
+        server_object = session.create_session(args)
         self.create_site(server_object)
 
     def create_site(self, server):

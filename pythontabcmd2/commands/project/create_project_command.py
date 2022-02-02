@@ -1,5 +1,4 @@
 from .project_command import *
-from .. import CreateProjectParser
 import tableauserverclient as TSC
 from .. import log
 from ..auth.login_command import LoginCommand
@@ -18,15 +17,9 @@ class CreateProjectCommand(ProjectCommand):
         self.logger = log('pythontabcmd2.create_project_command',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        args, evaluated_project_path = \
-            CreateProjectParser.create_project_parser()
-        return cls(args, evaluated_project_path)
-
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
-        server_object = session.create_session(self.args)
+        server_object = session.create_session(args)
         self.create_project(server_object)
 
     def create_project(self, server):

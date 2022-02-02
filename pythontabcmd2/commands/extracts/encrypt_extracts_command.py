@@ -1,7 +1,6 @@
 import tableauserverclient as TSC
 from .. import log
 from ... import Session
-from .. import EncryptExtractsParser
 
 
 class EncryptExtracts:
@@ -12,14 +11,10 @@ class EncryptExtracts:
         self.logger = log('pythontabcmd2.encryptextracts_command',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        args, site_name = EncryptExtractsParser.encrypt_extracts_parser()
-        return cls(args, site_name)
 
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
-        server_object = session.create_session(self.args)
+        server_object = session.create_session(args)
         self.encrypt_extract(server_object)
 
     def encrypt_extract(self, server):

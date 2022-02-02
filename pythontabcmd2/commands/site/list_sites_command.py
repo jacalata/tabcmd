@@ -1,6 +1,5 @@
 import tableauserverclient as TSC
 from .. import log
-from ...parsers.list_sites_parser import ListSitesParser
 from .site_command import SiteCommand
 from ... import Session
 

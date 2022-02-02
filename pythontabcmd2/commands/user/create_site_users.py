@@ -1,6 +1,5 @@
 from ..commands import Commands
 from .. import Constants
-from .. import CreateSiteUsersParser
 import tableauserverclient as TSC
 from .. import log
 from ... import Session

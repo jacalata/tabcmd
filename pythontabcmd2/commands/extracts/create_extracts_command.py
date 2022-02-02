@@ -1,7 +1,6 @@
 import tableauserverclient as TSC
 from .. import log
 from ... import Session
-from .. import CreateExtractsParser
 
 
 class CreateExtracts:
@@ -11,14 +10,9 @@ class CreateExtracts:
         self.logger = log('pythontabcmd2.createextracts_command',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        args = CreateExtractsParser.create_extracts_parser()
-        return cls(args)
-
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
-        server_object = session.create_session(self.args)
+        server_object = session.create_session(args)
         self.create_extract(server_object)
 
     def create_extract(self, server):

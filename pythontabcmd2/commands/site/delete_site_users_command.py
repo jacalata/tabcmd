@@ -4,8 +4,6 @@ import tableauserverclient as TSC
 from .. import log
 from ... import Session
 from .site_command import SiteCommand
-from .. import DeleteSiteUsersParser
-from pythontabcmd2 import commands
 
 
 class DeleteSiteUsersCommand(SiteCommand):
@@ -14,21 +12,16 @@ class DeleteSiteUsersCommand(SiteCommand):
     The users to be removed are specified in a file that contains
     a simple list of one user name per line.
     """
-    def __init__(self, csv_lines, args):
+    def __init__(self, args):
         super().__init__(args)
-        self.csv_lines = csv_lines
         self.logger = log('pythontabcmd2.delete_site_users_command',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        csv_lines, args = DeleteSiteUsersParser.delete_site_users_parser()
-        return cls(csv_lines, args)
 
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
         server_object = session.create_session(self.args)
-        self.delete_users(server_object, self.csv_lines)
+        self.delete_users(server_object, args.users)
 
     def delete_users(self, server_object, csv_lines):
         self.delete_user_command(server_object, csv_lines)

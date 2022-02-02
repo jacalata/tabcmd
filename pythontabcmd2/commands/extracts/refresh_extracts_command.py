@@ -1,7 +1,6 @@
 import tableauserverclient as TSC
 from .. import log
 from ... import Session
-from .. import RefreshExtractsParser
 
 
 class RefreshExtracts:
@@ -11,14 +10,10 @@ class RefreshExtracts:
         self.logger = log('pythontabcmd2.refreshextract_command',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        args = RefreshExtractsParser.refresh_extracts_parser()
-        return cls(args)
 
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
-        server_object = session.create_session(self.args)
+        server_object = session.create_session(args)
         self.refresh_extracts(server_object)
 
     def refresh_extracts(self, server):

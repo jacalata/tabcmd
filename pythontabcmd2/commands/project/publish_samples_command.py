@@ -1,5 +1,4 @@
 from .project_command import *
-from .. import PublishSamplesParser
 import tableauserverclient as TSC
 from .. import log
 from ... import Session
@@ -17,15 +16,10 @@ class PublishSamplesCommand(ProjectCommand):
         self.logger = log('pythontabcmd2.publish_samples_command',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        args, evaluated_project_path = \
-            PublishSamplesParser.publish_samples_parser()
-        return cls(args, evaluated_project_path)
 
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
-        server_object = session.create_session(self.args)
+        server_object = session.create_session(args)
         self.publish_samples(server_object)
 
     def publish_samples(self, server):

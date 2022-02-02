@@ -1,8 +1,5 @@
-from logging import Logger
-
 import tableauserverclient as TSC
 from .. import log
-from ...parsers.edit_site_parser import EditSiteParser
 from .site_command import SiteCommand
 from ... import Session
 
@@ -29,11 +26,6 @@ class EditSiteCommand(SiteCommand):
         self.storage_quota = args.storage_quota
         self.logger = log('pythontabcmd2.edit_site_command',
                           self.logging_level)
-
-    @classmethod
-    def parse(cls):
-        args, admin_mode, current_site_id = EditSiteParser.edit_site_parser()
-        return cls(args, admin_mode, current_site_id)
 
     def run_command(self):
         session = Session()

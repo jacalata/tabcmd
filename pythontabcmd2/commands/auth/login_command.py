@@ -1,4 +1,3 @@
-from .. import LoginParser
 from .. import log
 from ..commands import Commands
 from .session import Session

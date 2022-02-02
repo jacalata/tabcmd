@@ -1,7 +1,6 @@
 import tableauserverclient as TSC
 from .. import log
 from ... import Session
-from .. import ExportParser
 from .datasources_and_workbooks_command import DatasourcesAndWorkbooks
 
 
@@ -17,14 +16,9 @@ class ExportCommand(DatasourcesAndWorkbooks):
         self.logger = log('pythontabcmd2.export',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        args, url = ExportParser.export_parser()
-        return cls(args, url)
-
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
-        server_object = session.create_session(self.args)
+        server_object = session.create_session(args)
         self.export(server_object)
 
     def get_workbook(self, url):

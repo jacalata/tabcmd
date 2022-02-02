@@ -1,6 +1,5 @@
-from ..commands import Commands
+
 from .project_command import *
-from .. import DeleteProjectParser
 import tableauserverclient as TSC
 from .. import log
 from ... import Session
@@ -15,15 +14,9 @@ class DeleteProjectCommand(ProjectCommand):
         self.logger = log('pythontabcmd2.delete_project_command',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        args, evaluated_project_path = \
-            DeleteProjectParser.delete_project_parser()
-        return cls(args, evaluated_project_path)
-
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
-        server_object = session.create_session(self.args)
+        server_object = session.create_session(args)
         self.delete_project(server_object)
 
     def delete_project(self, server):

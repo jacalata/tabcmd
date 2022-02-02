@@ -1,8 +1,6 @@
 from .site_command import SiteCommand
-from ..commands import Commands
 import tableauserverclient as TSC
 from .. import log
-from ...parsers.delete_site_parser import DeleteSiteParser
 from ... import Session
 
 
@@ -12,19 +10,14 @@ class DeleteSiteCommand(SiteCommand):
     """
     def __init__(self, args):
         super().__init__(args)
-        self.site_name = args.site_name
         self.logger = log('pythontabcmd2.delete_site_command',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        args = DeleteSiteParser.delete_site_parser()
-        return cls(args)
 
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
-        server_object = session.create_session(self.args)
-        self.delete_site(server_object, self.site_name)
+        server_object = session.create_session(args)
+        self.delete_site(server_object, args.sitename)
 
     def delete_site(self, server, site_name):
         """Method to delete a site using tableauserverclient methods"""

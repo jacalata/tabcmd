@@ -1,6 +1,5 @@
-from ..commands import Commands
+
 from .group_command import GroupCommand
-from .. import CreateGroupParser
 import tableauserverclient as TSC
 from .. import log
 from ... import Session
@@ -15,14 +14,9 @@ class CreateGroupCommand(GroupCommand):
         self.logger = log('pythontabcmd2.create_group_command',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        args = CreateGroupParser.create_group_parser()
-        return cls(args)
-
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
-        server_object = session.create_session(self.args)
+        server_object = session.create_session(args)
         self.create_group(server_object)
 
     def create_group(self, server):

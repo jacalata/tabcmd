@@ -1,7 +1,5 @@
 from pythontabcmd2.commands.user.user_data import Userdata
 from ..commands import Commands
-from .. import Constants
-from .. import AddUserParser
 import tableauserverclient as TSC
 from .. import log
 from ... import Session

@@ -1,7 +1,6 @@
 import tableauserverclient as TSC
 from .. import log
 from ... import Session
-from .. import DeleteExtractsParser
 
 
 class DeleteExtracts:
@@ -11,14 +10,9 @@ class DeleteExtracts:
         self.logger = log('pythontabcmd2.deleteextracts_command',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        args = DeleteExtractsParser.delete_extracts_parser()
-        return cls(args)
-
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
-        server_object = session.create_session(self.args)
+        server_object = session.create_session(args)
         self.delete_extract(server_object)
 
     def delete_extract(self, server):
