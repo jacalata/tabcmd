@@ -1,13 +1,11 @@
 from ..commands import Commands
-from .. import Constants
-from .user_command import UserCommand
-from .. import RemoveUserParser
 import tableauserverclient as TSC
 from .. import log
 from ... import Session
+from pythontabcmd2.commands.user.user_data import user_data
 
 
-class RemoveUserCommand(UserCommand):
+class RemoveUserCommand():
     """
      Command to remove users from the specified group
     """
@@ -18,15 +16,11 @@ class RemoveUserCommand(UserCommand):
         self.logger = log('pythontabcmd2.remove_users_command',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        csv_lines, args, group_name = RemoveUserParser.remove_user_parser()
-        return cls(args, csv_lines, group_name)
 
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
-        server_object = session.create_session(self.args)
-        self.remove_users(server_object, self.csv_lines, self.group)
+        server_object = session.create_session(args)
+        self.remove_users(server_object, args.users, args.groupname)
 
     def remove_users(self, server_object, csv_lines, group_name):
         self.remove_user_command(server_object, csv_lines, group_name)
@@ -37,8 +31,8 @@ class RemoveUserCommand(UserCommand):
         user_obj_list = command.get_user(csv_lines)
         for user_obj in user_obj_list:
             username = user_obj.username
-            user_id = UserCommand.find_user_id(server, username)
-            group = UserCommand.find_group(server, group_name)
+            user_id = user_data.find_user_id(server, username)
+            group = user_data.find_group(server, group_name)
             try:
                 server.groups.remove_user(group, user_id)
                 self.logger.info("Successfully removed")

@@ -1,32 +1,27 @@
+from pythontabcmd2.commands.user.user_data import Userdata
 from ..commands import Commands
 from .. import Constants
-from .user_command import UserCommand
 from .. import AddUserParser
 import tableauserverclient as TSC
 from .. import log
 from ... import Session
 
 
-class AddUserCommand(UserCommand):
+class AddUserCommand():
     """
     Command to Adds users to a specified group
     """
-    def __init__(self, args, csv_lines, group_name):
-        super().__init__(args, csv_lines)
+    def __init__(self, args):
+        super().__init__(args)
         self.args = args
-        self.group = group_name
+        self.group = args.groupname
         self.logger = log('pythontabcmd2.add_user_command',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        csv_lines, args, group_name = AddUserParser.add_user_parser()
-        return cls(args, csv_lines, group_name)
-
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
-        server_object = session.create_session(self.args)
-        self.add_users(server_object, self.csv_lines, self.group)
+        server_object = session.create_session(args)
+        self.add_users(server_object, args.users, args.groupname)
 
     def add_users(self, server_object, csv_lines, group_name):
         self.add_user_command(server_object, csv_lines, group_name)
@@ -37,8 +32,8 @@ class AddUserCommand(UserCommand):
         user_obj_list = command.get_user(csv_lines)
         for user_obj in user_obj_list:
             username = user_obj.username
-            user_id = UserCommand.find_user_id(server, username)
-            group = UserCommand.find_group(server, group_name)
+            user_id = Userdata.find_user_id(server, username)
+            group = Userdata.find_group(server, group_name)
             try:
                 server.groups.add_user(group, user_id)
                 self.logger.info("Successfully added")

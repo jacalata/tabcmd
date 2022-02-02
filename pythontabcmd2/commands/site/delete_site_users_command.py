@@ -1,10 +1,11 @@
+from pythontabcmd2.commands.user import user_data
 from ..commands import Commands
-from ..user.user_command import UserCommand
 import tableauserverclient as TSC
 from .. import log
 from ... import Session
 from .site_command import SiteCommand
 from .. import DeleteSiteUsersParser
+from pythontabcmd2 import commands
 
 
 class DeleteSiteUsersCommand(SiteCommand):
@@ -40,7 +41,7 @@ class DeleteSiteUsersCommand(SiteCommand):
         self.logger.info("======== 0% complete ========")
         for user_obj in user_obj_list:
             username = user_obj.username
-            user_id = UserCommand.find_user_id(server, username)
+            user_id = user_data.find_user_id(server, username)
             try:
                 server.users.remove(user_id)
                 self.logger.info("Successfully deleted user from site: {}".

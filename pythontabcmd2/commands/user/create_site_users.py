@@ -1,13 +1,12 @@
 from ..commands import Commands
 from .. import Constants
-from .user_command import UserCommand
 from .. import CreateSiteUsersParser
 import tableauserverclient as TSC
 from .. import log
 from ... import Session
 
 
-class CreateSiteUsersCommand(UserCommand):
+class CreateSiteUsersCommand():
     """
     Command to add users to a site, based on information supplied in a
     comma-separated values (CSV) file. If the user is not already
@@ -21,15 +20,11 @@ class CreateSiteUsersCommand(UserCommand):
         self.logger = log('pythontabcmd2.create_site_users_command',
                           self.logging_level)
 
-    @classmethod
-    def parse(cls):
-        csv_lines, args = CreateSiteUsersParser.create_site_user_parser()
-        return cls(csv_lines, args)
 
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
         server_object = session.create_session(self.args)
-        self.create_user(server_object, self.csv_lines, self.role)
+        self.create_user(server_object, args.users, args.role)
 
     def create_user(self, server_object, csv_lines, role):
         self.create_user_command(csv_lines, server_object, role)
