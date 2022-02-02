@@ -1,4 +1,4 @@
-from venv import create
+
 from .parent_parser import *
 
 
@@ -15,6 +15,6 @@ class CreateProjectParser():
         set_description_arg(create_project_parser)
         set_parent_project_arg(create_project_parser)
 
-        create_project_parser.add_argument('--content-permission', '-c',
+        create_project_parser.add_argument('--content-permission',
                                            default=None,
                                            help='content permission ')

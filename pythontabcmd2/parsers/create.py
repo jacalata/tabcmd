@@ -1,4 +1,4 @@
-import pythontabcmd2.parsers.parent_parser as parent_parser
+from pythontabcmd2.parsers import parent_parser as parent_parser
 
 
 """
@@ -10,10 +10,10 @@ command[2] = command help text
 
 class Subparsers():
 
-    def __init__(self, parent_parser=None):
-        if parent_parser is None:
-            parent_parser = parent_parser.initialize_parser() # tests don't usually need a ref to this
-        self.parent = parent_parser
+    def __init__(self, main_parser=None):
+        if main_parser is None:
+            main_parser = parent_parser.initialize_parser() # tests don't usually need a ref to this
+        self.parent = main_parser
 
         self.subparsers = self.parent.add_subparsers()
 

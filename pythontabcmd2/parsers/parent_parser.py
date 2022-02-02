@@ -3,8 +3,7 @@ import argparse
 """
 parents project path
 """
-def add_parent_project_path():
-    parser = argparse.ArgumentParser(add_help=False)
+def set_parent_project_arg(parser):
     parser.add_argument('--parent-project-path',
                         default=None,
                         help='path of parent project')
