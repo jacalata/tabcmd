@@ -10,4 +10,5 @@ class DecryptExtractsParser:
         """Method to parse decrypt extracts arguments passed by the user"""
        
         decrypt_extract_parser = subparsers.include(command)
+        decrypt_extract_parser.add_argument('sitename', default=None, help='Name of site to delete')
 

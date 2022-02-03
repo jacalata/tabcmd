@@ -11,6 +11,7 @@ class CreateProjectParser():
         """Method to parse create project arguments passed by the user"""
 
         create_project_parser = subparsers.include(command)
+        # why on earth did we put '-n' for projectname here?
         set_project_N_arg(create_project_parser)
         set_description_arg(create_project_parser)
         set_parent_project_arg(create_project_parser)

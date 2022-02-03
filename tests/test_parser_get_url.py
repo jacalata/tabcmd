@@ -6,27 +6,28 @@ except ImportError:
     import mock
 import argparse
 from pythontabcmd2.parsers.get_url_parser import GetUrlParser
-
+from .ParserTest import *
 
 class GetUrlParserTest(unittest.TestCase):
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(filename="helloworld"))
-    def test_get_url_parser_file(self, mock_args):
-        with self.assertRaises(AttributeError):
-            args, url = GetUrlParser.get_url_parser()
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace())
-    def test_get_url_parser_missing_all_args(self, mock_args):
-        with self.assertRaises(AttributeError):
-            args, url = GetUrlParser.get_url_parser()
+    @classmethod
+    def setUpClass(cls):
+        commandname = 'get'
+        cls.parser_under_test, subparsers, mock_command = initialize_test_pieces(commandname)
+        GetUrlParser.get_url_parser(subparsers, mock_command)
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(site="default",
-                                                filename="helloworld",
-                                                ))
-    def test_get_url_parser_optional_args(self, mock_args):
-        args, url = GetUrlParser.get_url_parser()
-        args_from_command = vars(args)
-        args_from_mock = vars(mock_args.return_value)
-        assert args_from_command == args_from_mock
+    def test_get_url_parser_file(self):
+        input = ['get', 'url-value', '--filename', 'filename-value']
+        result = self.parser_under_test.parse_args(input)
+        assert result is not None
+
+    def test_get_url_parser_missing_all_args(self):
+        mock_args = ['get']
+        with self.assertRaises(SystemExit):
+            self.parser_under_test.parse_args(mock_args)
+
+    def test_get_url_parser_no_file(self):
+        mock_args = ['get', 'url-value']
+        args = self.parser_under_test.parse_args(mock_args)
+        assert args is not None
+        assert args.url == 'url-value'

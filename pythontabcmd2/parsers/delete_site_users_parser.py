@@ -10,5 +10,5 @@ class DeleteSiteUsersParser:
         """Method to parse delete users passed by the user"""
 
         delete_site_users_parser = subparsers.include(command)
-        set_users_file_arg(delete_site_users_parser)
+        set_users_file_positional(delete_site_users_parser)
 

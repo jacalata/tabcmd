@@ -8,3 +8,6 @@ class EditSiteParser:
         """Method to parse edit site arguments passed by the user"""
         edit_site_parser = subparsers.include(command)
         set_site_args(edit_site_parser)
+        set_site_id_arg(edit_site_parser)
+        set_site_status_arg(edit_site_parser)
+

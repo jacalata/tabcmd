@@ -1,59 +1,35 @@
-import sys
 import unittest
-
-try:
-    from unittest import mock
-except ImportError:
-    import mock
-import argparse
+from .ParserTest import *
 from pythontabcmd2.parsers.remove_users_parser import RemoveUserParser
 
+class RemoveUsersParserTest(unittest.TestCase):
 
-class AddUsersParserTest(unittest.TestCase):
-    csv = ("testname", "testpassword", "test", "test", "test", "test")
+    def test_remove_users_parser(self):
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=(argparse.Namespace(
-                    username="test",
-                    password="testpass",
-                    server="http://test",
-                    users="users.csv",
-                    site="helloworld")))
-    def test_remove_users_parser_role(self, mock_args):
-        with mock.patch('builtins.open', mock.mock_open(read_data='test')):
-            sys.argv = ["test_csv.csv", "test", "test1", "test2"]
-            csv_lines, args, group_name = RemoveUserParser.remove_user_parser()
-            print(args)
-            args_from_command = vars(args)
-            args_from_mock = vars(mock_args.return_value)
-            self.assertEqual(args_from_command, args_from_mock)
+        parser, subparsers, mock_command = initialize_test_pieces('removeusers')
+        input = ["removeusers", "group-name"]
+        RemoveUserParser.remove_user_parser(subparsers, mock_command)
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=(argparse.Namespace(
-                    username="test",
-                    password="testpass",
-                    server="http://test",
-                    site="helloworld")))
-    def test_remove_users_parser_missing_group_name(self, mock_args):
-        with mock.patch('builtins.open', mock.mock_open(read_data='test')):
-            with self.assertRaises(AttributeError):
-                sys.argv = ["test_csv.csv", "test", "test1", "test2"]
-                csv_lines, args, group_name = RemoveUserParser.\
-                    remove_user_parser()
-                args_from_command = vars(args)
-                args_from_mock = vars(mock_args.return_value)
-                self.assertEqual(args_from_command, args_from_mock)
+        args = parser.parse_args(input)
+        assert args is not None
+        assert args.groupname == "group-name"
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=(argparse.Namespace(users="test.csv",
-                                                 username="test",
-                                                 password="testpass",
-                                                 server="http://test",
-                                                 site="helloworld")))
-    def test_remove_users_parser_missing_group_name_present(self, mock_args):
-        with mock.patch('builtins.open', mock.mock_open(read_data='test')):
-            sys.argv = ["test_csv.csv", "test", "test1", "test2"]
-            csv_lines, args, group_name = RemoveUserParser.remove_user_parser()
-            args_from_command = vars(args)
-            args_from_mock = vars(mock_args.return_value)
-            self.assertEqual(args_from_command, args_from_mock)
+
+    def test_remove_users_parser_no_file(self):
+        input = ["removeusers", "group-name", "--users"]
+        parser, subparsers, mock_command = initialize_test_pieces('removeusers')
+        RemoveUserParser.remove_user_parser(subparsers, mock_command)
+
+        with self.assertRaises(SystemExit):
+            parser.parse_args(input)
+
+
+    # this should be an error but it isn't
+    def test_remove_users_parser_missing_group_name(self):
+        parser, subparsers, mock_command = initialize_test_pieces('removeusers')
+        input = ["removeusers"]
+        RemoveUserParser.remove_user_parser(subparsers, mock_command)
+        with self.assertRaises(SystemExit):
+            parser.parse_args(input)
+
+

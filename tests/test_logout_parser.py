@@ -4,89 +4,28 @@ try:
     from unittest import mock
 except ImportError:
     import mock
-import argparse
 from pythontabcmd2.parsers.logout_parser import LogoutParser
-
+from .ParserTest import *
 
 class LogoutParserTest(unittest.TestCase):
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(
-                    server="https://localhost/",
-                    username="helloworld",
-                    site="",
-                    logging_level="info",
-                    password="testing123",
-                    no_prompt=True, token=None,
-                    token_name=None,
-                    cookie=True,
-                    no_cookie=False,
-                    prompt=False
-                ))
-    def test_logout_username_password(self, mock_args):
-        args = LogoutParser.logout_parser()
-        assert args == argparse.Namespace(server="https://localhost/",
-                                          username="helloworld",
-                                          site="",
-                                          logging_level="info",
-                                          password="testing123",
-                                          no_prompt=True, token=None,
-                                          token_name=None,
-                                          cookie=True,
-                                          no_cookie=False,
-                                          prompt=False)
+    @classmethod
+    def setUpClass(cls):
+        commandname = 'logout'
+        cls.parser_under_test, subparsers, mock_command = initialize_test_pieces(commandname)
+        LogoutParser.logout_parser(subparsers, mock_command)
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace())
-    def test_logout_missing_args(self, mock_args):
-        with self.assertRaises(AttributeError):
-            args = LogoutParser.logout_parser()
-            assert args == argparse.Namespace()
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(
-                    username="helloworld",
-                    site="",
-                    logging_level="info",
-                    password="testing123",
-                    no_prompt=True, token=None,
-                    token_name=None,
-                    cookie=True,
-                    no_cookie=False,
-                    prompt=False
-                ))
-    def test_logout_missing_server(self, mock_args):
-        args = LogoutParser.logout_parser()
-        assert args == argparse.Namespace(
-                                          username="helloworld",
-                                          site="",
-                                          logging_level="info",
-                                          password="testing123",
-                                          no_prompt=True, token=None,
-                                          token_name=None,
-                                          cookie=True,
-                                          no_cookie=False,
-                                          prompt=False)
+    def test_logout_many_args(self):
+        input = ['logout', '--server', "https://localhost/", '--username', 'helloworld',
+                '--logging-level', "info", '--password', "testing123"]
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(
-                    site="",
-                    logging_level="info",
-                    password="testing123",
-                    no_prompt=True, token=None,
-                    token_name=None,
-                    cookie=True,
-                    no_cookie=False,
-                    prompt=False
-                ))
-    def test_logout_missing_username(self, mock_args):
-        args = LogoutParser.logout_parser()
-        assert args == argparse.Namespace(
-            site="",
-            logging_level="info",
-            password="testing123",
-            no_prompt=True, token=None,
-            token_name=None,
-            cookie=True,
-            no_cookie=False,
-            prompt=False)
+        args = self.parser_under_test.parse_args(input)
+        assert args is not None
+
+    def test_logout_no_args(self):
+        args = self.parser_under_test.parse_args([])
+        assert args is not None
+
+
+

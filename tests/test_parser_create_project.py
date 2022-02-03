@@ -1,161 +1,38 @@
 import unittest
-
-try:
-    from unittest import mock
-except ImportError:
-    import mock
-import argparse
+from .ParserTest import *
 from pythontabcmd2.parsers.create_project_parser import CreateProjectParser
 
+class ProjectParserTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        commandname = 'createproject'
+        cls.parser_under_test, subparsers, mock_command = initialize_test_pieces(commandname)
+        CreateProjectParser.create_project_parser(subparsers, mock_command)
 
-class CreateProjectParserTest(unittest.TestCase):
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(name="testproject",
-                                                parent_project_path="abcdef",
-                                                description='desc',
-                                                content_permission=None,
-                                                server="https://localhost/",
-                                                username="helloworld",
-                                                site="",
-                                                logging_level="info",
-                                                password="testing123",
-                                                no_prompt=True, token=None,
-                                                token_name=None,
-                                                cookie=True,
-                                                no_cookie=False,
-                                                prompt=False,
-                                                ))
-    def test_create_project_parser_optional_arguments(self, mock_args):
-        args, parent_proj_path = CreateProjectParser.create_project_parser()
-        assert args == argparse.Namespace(name="testproject",
-                                          parent_project_path="abcdef",
-                                          description='desc',
-                                          content_permission=None,
-                                          server="https://localhost/",
-                                          username="helloworld",
-                                          site="",
-                                          logging_level="info",
-                                          password="testing123",
-                                          no_prompt=True, token=None,
-                                          token_name=None,
-                                          cookie=True,
-                                          no_cookie=False,
-                                          prompt=False, )
-        assert parent_proj_path == "abcdef"
+    def test_parser_project_parser_optional_arguments(self):
+        input = ['createproject', '-n', 'testproject','--parent-project-path', 'abcdef',
+                  '--description', 'desc']
+        args = self.parser_under_test.parse_args(input)
+        assert args.parent_project_path == "abcdef"
+        assert args.description == 'desc'
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace())
-    def test_create_project_parser_required_arguments_name(self, mock_args):
-        raises = False
-        try:
-            args, parent_proj_path = CreateProjectParser.\
-                create_project_parser()
-        except Exception:
-            raises = True
-        self.assertTrue(raises, True)
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(
-                    parent_project_path="abcdef",
-                    description='desc',
-                    content_permission=None,
-                    server="https://localhost/",
-                    username="helloworld",
-                    site="",
-                    logging_level="info",
-                    password="testing123",
-                    no_prompt=True, token=None,
-                    token_name=None,
-                    cookie=True,
-                    no_cookie=False,
-                    prompt=False,
-                ))
-    def test_create_project_parser_required_arguments_missing_name(self,
-                                                                   mock_args):
-        args, parent_proj_path = CreateProjectParser.create_project_parser()
-        assert args != argparse.Namespace(name="testproject",
-                                          parent_project_path="abcdef",
-                                          description='desc',
-                                          content_permission=None,
-                                          server="https://localhost/",
-                                          username="helloworld",
-                                          site="",
-                                          logging_level="info",
-                                          password="testing123",
-                                          no_prompt=True, token=None,
-                                          token_name=None,
-                                          cookie=True,
-                                          no_cookie=False,
-                                          prompt=False, )
-        assert parent_proj_path == "abcdef"
+    def test_parser_project_parser_required_arguments_name(self):
+        input = ['createproject', '--project', 'mock-name']
+        args = self.parser_under_test.parse_args(input)
+        assert args is not None
+        print(args)
+        assert args.projectname == 'mock-name'
+        print (args)
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(
-                    parent_project_path="abcdef",
-                    description='desc',
-                    content_permission=None,
-                    server="https://localhost/",
-                    username="helloworld",
-                    site="",
-                    logging_level="info",
-                    password="testing123",
-                    no_prompt=True, token=None,
-                    token_name=None,
-                    cookie=True,
-                    no_cookie=False,
-                    prompt=False,
-                ))
-    def test_create_project_parser_required_arguments_missing_name(self,
-                                                                   mock_args):
-        args, parent_proj_path = CreateProjectParser.create_project_parser()
-        assert args != argparse.Namespace(name="testproject",
-                                          parent_project_path="abcdef",
-                                          description='desc',
-                                          content_permission=None,
-                                          server="https://localhost/",
-                                          username="helloworld",
-                                          site="",
-                                          logging_level="info",
-                                          password="testing123",
-                                          no_prompt=True, token=None,
-                                          token_name=None,
-                                          cookie=True,
-                                          no_cookie=False,
-                                          prompt=False, )
-        assert parent_proj_path == "abcdef"
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(
-                    description='desc',
-                    parent_project_path=None,
-                    content_permission=None,
-                    server="https://localhost/",
-                    username="helloworld",
-                    site="",
-                    logging_level="info",
-                    password="testing123",
-                    no_prompt=True, token=None,
-                    token_name=None,
-                    cookie=True,
-                    no_cookie=False,
-                    prompt=False,
-                ))
-    def test_create_project_parser_optional_arguments_missing_project_path(
-            self, mock_args):
-        args, parent_proj_path = CreateProjectParser.create_project_parser()
-        assert args != argparse.Namespace(name="testproject",
-                                          parent_project_path=None,
-                                          description='desc',
-                                          content_permission=None,
-                                          server="https://localhost/",
-                                          username="helloworld",
-                                          site="",
-                                          logging_level="info",
-                                          password="testing123",
-                                          no_prompt=True, token=None,
-                                          token_name=None,
-                                          cookie=True,
-                                          no_cookie=False,
-                                          prompt=False, )
-        assert parent_proj_path is None
+    def test_parser_project_parser_required_arguments_name_missing(self):
+        input = ['createproject', '-n']
+        with self.assertRaises(SystemExit):
+            args = self.parser_under_test.parse_args(input)
+
+    def test_parser_project_parser_random_extra(self):
+        input = ['createproject', 'boo', '--random']
+        with self.assertRaises(SystemExit):
+             args = self.parser_under_test.parse_args(input)

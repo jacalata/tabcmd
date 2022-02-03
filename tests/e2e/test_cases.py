@@ -17,7 +17,7 @@ def _test_command(test_args: list[str]):
 
 
 def create_delete_group():
-    command = "creategroup"
+    command = "parser.roup"
     arguments = [command, e2e_vars.group_name]
     _test_command(arguments)
 
@@ -30,4 +30,4 @@ def create_delete_group():
 
 if __name__ == "__main__":
     # expect that we are already logged in because user called setup_exe
-    create_delete_group()
+    parser.delete_group()

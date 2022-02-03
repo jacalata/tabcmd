@@ -1,4 +1,4 @@
-import sys
+
 import unittest
 
 try:
@@ -7,47 +7,35 @@ except ImportError:
     import mock
 import argparse
 from pythontabcmd2.parsers.delete_parser import DeleteParser
+from .ParserTest import *
+
+class DeleteParserTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        commandname = 'delete'
+        cls.parser_under_test, subparsers, mock_command = initialize_test_pieces(commandname)
+        DeleteParser.delete_parser(subparsers, mock_command)
 
 
-class DeleteGroupParserTestT(unittest.TestCase):
+    def test_delete_parser(self):
+        mock_args = ['delete', '-r', 'project-name-input', '--datasource', 'datasource-input']
+        args = self.parser_under_test.parse_args(mock_args)
+        assert args is not None
+        assert args.projectname == 'project-name-input', args
+        assert args.datasource == 'datasource-input', args
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=(argparse.Namespace(
-                    username="test",
-                    password="testpass",
-                    server="http://test",
-                    site="helloworld")))
-    def test_delete_parser_login(self, mock_args):
-        args = DeleteParser.delete_parser()
-        args_from_command = vars(args)
-        args_from_mock = vars(mock_args.return_value)
-        self.assertEqual(args_from_command, args_from_mock)
+    # todo: we should make this fail?
+    def test_delete_parser_datasource_and_workbook_present(self):
+        mock_args = ['delete', '-r', 'project-name-input',
+            '--datasource', 'datasource-input', '--workbook', 'workbook-name']
+        args = self.parser_under_test.parse_args(mock_args)
+        assert args.datasource == 'datasource-input', args
+        assert args.workbook == 'workbook-name', args
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=(argparse.Namespace(datasource="hellotest",
+    # todo we should make this fail
+    def test_delete_parser_missing_args(self):
+        args = self.parser_under_test.parse_args(['delete'])
+        assert args is not None
+        assert args.datasource is None
+        assert args.workbook is None
 
-                                                 site="helloworld")))
-    def test_delete_parser(self, mock_args):
-        args = DeleteParser.delete_parser()
-        args_from_command = vars(args)
-        args_from_mock = vars(mock_args.return_value)
-        self.assertEqual(args_from_command, args_from_mock)
-
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=(argparse.Namespace(datasource="hellotest",
-                                                 workbook=None,
-                                                 site="helloworld")))
-    def test_delete_parser_datasource_and_workbook_present(self, mock_args):
-        args = DeleteParser.delete_parser()
-        args_from_command = vars(args)
-        args_from_mock = vars(mock_args.return_value)
-        self.assertEqual(args_from_command, args_from_mock)
-
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=(argparse.Namespace()))
-    def test_delete_parser_missing_args(self, mock_args):
-        with self.assertRaises(AttributeError):
-            args = DeleteParser.delete_parser()
-            args_from_command = vars(args)
-            args_from_mock = vars(mock_args.return_value)
-            self.assertEqual(args_from_command, args_from_mock)

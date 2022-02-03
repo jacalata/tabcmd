@@ -172,12 +172,12 @@ def set_encryption_option(parser):
 # for publish it uses -r for destination project name
 # but parser.site uses -r for site-content-url
 def set_project_R_arg(parser):
-    parser.add_argument('--project', '-r',
+    parser.add_argument('--project', '-r', dest='projectname',
         help='The name of the destination project.')
     return parser
 
 def set_project_N_arg(parser):
-    parser.add_argument('--project', '-n',
+    parser.add_argument('--project', '-n', dest='projectname',
         help='The name of the project.')
     return parser
 

@@ -1,5 +1,5 @@
 import unittest
-
+from .ParserTest import *
 try:
     from unittest import mock
 except ImportError:
@@ -9,40 +9,22 @@ from pythontabcmd2.parsers.create_group_parser import CreateGroupParser
 
 
 class CreateGroupParserTest(unittest.TestCase):
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(name="test",
-                                                site="helloworld"))
-    def test_create_group_parser_required_name(self, mock_args):
 
-        args = CreateGroupParser.create_group_parser()
-        assert getattr(args, "name") == getattr(mock_args.return_value, "name")
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace())
-    def test_create_group_parser_missing_required_name(self, mock_args):
-        with self.assertRaises(AttributeError):
-            args = CreateGroupParser.create_group_parser()
-            args_from_command = vars(args)
-            args_from_mock = vars(mock_args.return_value)
-            assert args_from_command == args_from_mock
+    @classmethod
+    def setUpClass(cls):
+        commandname = 'creategroup'
+        cls.parser_under_test, subparsers, mock_command = initialize_test_pieces(commandname)
+        CreateGroupParser.create_group_parser(subparsers, mock_command)
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(name="test",
-                                                username="testname",
-                                                site="helloworld"))
-    def test_create_group_parser_username(self, mock_args):
-        args = CreateGroupParser.create_group_parser()
-        args_from_command = vars(args)
-        args_from_mock = vars(mock_args.return_value)
-        assert args_from_command == args_from_mock
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(name="test",
-                                                password="testpass",
-                                                site="helloworld"
-                                                ))
-    def test_create_group_parser_password(self, mock_args):
-        args = CreateGroupParser.create_group_parser()
-        args_from_command = vars(args)
-        args_from_mock = vars(mock_args.return_value)
-        assert args_from_command == args_from_mock
+
+    def test_create_group_parser_required_name(self):
+        mock_args = ['creategroup', 'groupname']
+        args = self.parser_under_test.parse_args(mock_args)
+        assert args.groupname == 'groupname'
+
+    def test_create_group_parser_missing_required_name(self):
+        mock_args = ['creategroup']
+        with self.assertRaises(SystemExit):
+            args = self.parser_under_test.parse_args(mock_args)

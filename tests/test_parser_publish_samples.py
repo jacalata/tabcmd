@@ -1,33 +1,29 @@
 import unittest
-
-try:
-    from unittest import mock
-except ImportError:
-    import mock
-import argparse
+from .ParserTest import *
 from pythontabcmd2.parsers.publish_samples_parser import PublishSamplesParser
 
 
-class PublishParserParserTest(unittest.TestCase):
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(name="helloworld"))
-    def test_publish_samples_parser_name(self, mock_args):
-        with self.assertRaises(AttributeError):
-            args, path = PublishSamplesParser.publish_samples_parser()
+class PublishSamplesParserTest(unittest.TestCase):
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace())
-    def test_publish_samples_parser_missing_all_args(self, mock_args):
-        with self.assertRaises(AttributeError):
-            args, path = PublishSamplesParser.publish_samples_parser()
+    @classmethod
+    def setUpClass(cls):
+        commandname = 'publishsamples'
+        cls.parser_under_test, subparsers, mock_command = initialize_test_pieces(commandname)
+        PublishSamplesParser.publish_samples_parser(subparsers, mock_command)
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(site="default",
-                                                name="helloworld",
-                                                parent_project_path="parent",
-                                                ))
-    def test_publish_samples_parser_optional_args(self, mock_args):
-        args, path = PublishSamplesParser.publish_samples_parser()
-        args_from_command = vars(args)
-        args_from_mock = vars(mock_args.return_value)
-        assert args_from_command == args_from_mock
+    def test_publish_parser_with_name(self):
+        input = ['publishsamples', '-n', 'project-name-value']
+        result = self.parser_under_test.parse_args(input)
+        assert result.projectname == 'project-name-value'
+
+    def test_publish_parser_projectname_without_flag(self):
+        input = ['publishsamples', 'project-name']
+        with self.assertRaises(SystemExit):
+            self.parser_under_test.parse_args(input)
+
+
+    def test_publish_samples_parser_optional_args(self):
+        input = ['publishsamples', '-n', 'projectname', '--parent-project-path', 'parent-goes-here']
+        result = self.parser_under_test.parse_args(input)
+        assert result.projectname == 'projectname'
+        assert result.parent_project_path == 'parent-goes-here'

@@ -8,75 +8,27 @@ except ImportError:
 import argparse
 from pythontabcmd2.parsers.delete_site_users_parser \
     import DeleteSiteUsersParser
-
+from .ParserTest import *
 
 class DeleteSiteUsersParserTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        commandname = 'deletesiteusers'
+        cls.parser_under_test, subparsers, mock_command = initialize_test_pieces(commandname)
+        DeleteSiteUsersParser.delete_site_users_parser(subparsers, mock_command)
+
+
+
     csv = ("testname", "testpassword", "test", "test", "test", "test")
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=(argparse.Namespace(
-                    username="test",
-                    password="testpass",
-                    server="http://test",
-                    site="helloworld")))
-    def test_delete_site_user_parser(self, mock_args):
+    def test_delete_site_user_parser(self):
         with mock.patch('builtins.open', mock.mock_open(read_data='test')):
-            sys.argv = ["test_csv.csv", "test", "test1", "test2"]
-            csv_lines, args = DeleteSiteUsersParser.delete_site_users_parser()
-            args_from_command = vars(args)
-            args_from_mock = vars(mock_args.return_value)
-            self.assertEqual(args_from_command, args_from_mock)
+            input = ["deletesiteusers", "test_csv.csv"]
+            args = self.parser_under_test.parse_args(input)
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=(argparse.Namespace(
-                    username="test",
-                    password="testpass",
-                    server="http://test",
-                    site="helloworld")))
-    def test_delete_site_user_parser_all_args(self, mock_args):
-        with mock.patch('builtins.open', mock.mock_open(read_data='test')):
-            sys.argv = ["test_csv.csv", "test", "test1", "test2"]
-            csv_lines, args = DeleteSiteUsersParser.delete_site_users_parser()
-            assert args == argparse.Namespace(username="test",
-                                              password="testpass",
-                                              server="http://test",
-                                              site="helloworld")
+    def test_delete_site_user_parser_missing_arguments(self):
+        with self.assertRaises(SystemExit):
+            input = ["deletesiteusers"]
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=(argparse.Namespace()))
-    def test_delete_site_user_parser_missing_arguments(self, mock_args):
-        with mock.patch('builtins.open', mock.mock_open(read_data='test')):
-            with self.assertRaises(AttributeError):
-                sys.argv = ["test_csv.csv", "test", "test1", "test2"]
-                csv_lines, args = DeleteSiteUsersParser. \
-                    delete_site_users_parser()
-                args_from_command = vars(args)
-                args_from_mock = vars(mock_args.return_value)
-                self.assertEqual(args_from_command, args_from_mock)
+            args = self.parser_under_test.parse_args(input)
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=(argparse.Namespace(
-                    password="testpass",
-                    server="http://test",
-                    site="helloworld")))
-    def test_delete_site_user_parser_missing_username(self, mock_args):
-        with mock.patch('builtins.open', mock.mock_open(read_data='test')):
-            sys.argv = ["test_csv.csv", "test", "test1", "test2"]
-            csv_lines, args = DeleteSiteUsersParser.delete_site_users_parser()
-            args_from_command = vars(args)
-            args_from_mock = vars(mock_args.return_value)
-            self.assertEqual(args_from_command, args_from_mock)
-
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=(argparse.Namespace(
-                    password="testpass",
-                    server="http://test")))
-    def test_delete_site_user_parser_missing_site(self, mock_args):
-        with self.assertRaises(AttributeError):
-            with mock.patch('builtins.open', mock.mock_open(read_data='test')):
-                sys.argv = ["test_csv.csv", "test", "test1", "test2"]
-                csv_lines, args = DeleteSiteUsersParser.\
-                    delete_site_users_parser()
-                args_from_command = vars(args)
-                args_from_mock = vars(mock_args.return_value)
-                self.assertEqual(args_from_command, args_from_mock)

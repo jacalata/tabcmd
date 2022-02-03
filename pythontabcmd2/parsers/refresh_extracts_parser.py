@@ -16,3 +16,5 @@ class RefreshExtractsParser:
         set_project_N_arg(refresh_extract_parser)
         set_url_arg(refresh_extract_parser)
         set_workbook_arg(refresh_extract_parser)
+        set_parent_project_arg(refresh_extract_parser)
+       

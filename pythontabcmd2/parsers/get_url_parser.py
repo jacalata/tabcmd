@@ -6,6 +6,8 @@ class GetUrlParser:
     def get_url_parser(subparsers ,command):
         """Method to parse get url arguments passed by the user"""
         get_url_parser = subparsers.include(command)
+        get_url_parser.add_argument('url', help='name of the file on Tableau Server to download')
+
         get_url_parser.add_argument('--filename', '-f',
                                     help='name of the file')
 

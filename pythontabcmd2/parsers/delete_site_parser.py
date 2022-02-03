@@ -10,4 +10,4 @@ class DeleteSiteParser:
         """Method to parse delete site arguments passed by the user"""
 
         delete_site_parser = subparsers.include(command)
-        delete_site_parser.add_argument('sitename', default=None, help='Name of site to delete')
+        delete_site_parser.add_argument('sitename', help='Name of site to delete')

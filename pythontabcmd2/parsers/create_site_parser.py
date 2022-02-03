@@ -9,10 +9,6 @@ class CreateSiteParser:
         """Method to parse create site arguments passed by the user"""
         create_site_parser = subparsers.include(command)
 
-        create_site_parser.add_argument('--site-name', default=None,
-                                        help='name of site')
-        create_site_parser.add_argument('--url', '-r', default=None,
-                                        help='used in URLs to specify site')
-
-
+        create_site_parser.add_argument('sitename', help='name of site')
+        set_content_url_arg(create_site_parser)
         set_site_args(create_site_parser)

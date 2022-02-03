@@ -5,44 +5,31 @@ try:
 except ImportError:
     import mock
 import argparse
+from .ParserTest import *
+
 from pythontabcmd2.parsers.create_site_parser import CreateSiteParser
 
 
 class CreateSiteParserTest(unittest.TestCase):
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(site_name="testsite",
-                                                no_site_mode=None))
-    def test_create_site_parser_missing_site_mode(self, mock_args):
-        with self.assertRaises(AttributeError):
-            args, mode = CreateSiteParser.create_site_parser()
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(site_name="testsite",
-                                                site_mode=None))
-    def test_create_site_parser_missing_no_site_mode(self, mock_args):
-        with self.assertRaises(AttributeError):
-            args, mode = CreateSiteParser.create_site_parser()
+    @classmethod
+    def setUpClass(cls):
+        commandname = 'createsite'
+        cls.parser_under_test, subparsers, mock_command = initialize_test_pieces(commandname)
+        CreateSiteParser.create_site_parser(subparsers, mock_command)
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(site_name="testsite"))
-    def test_create_site_parser_missing_both_site_modes(self, mock_args):
-        with self.assertRaises(AttributeError):
-            args, mode = CreateSiteParser.create_site_parser()
+    def test_create_site_parser_missing_both_site_modes(self):
+        mock_args = ['createsite', 'sitename']
+        args = self.parser_under_test.parse_args(mock_args)
+        assert args.site_admin_user_management == False, args
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace())
-    def test_create_site_parser_missing_all_args(self, mock_args):
-        with self.assertRaises(AttributeError):
-            args, mode = CreateSiteParser.create_site_parser()
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(site_name="testsite",
-                                                user_quota=12,
-                                                site_mode=None,
-                                                no_site_mode=None,
-                                                site="helloworld"))
-    def test_create_site_parser_user_quota_integer(self, mock_args):
-        args, mode = CreateSiteParser.create_site_parser()
-        args_from_command = vars(args)
-        args_from_mock = vars(mock_args.return_value)
-        assert args_from_command == args_from_mock
+    def test_create_site_parser_missing_all_args(self):
+        mock_args = ['createsite']
+        with self.assertRaises(SystemExit):
+            args = self.parser_under_test.parse_args(mock_args)
+
+    def test_create_site_parser_user_quota_integer(self):
+        mock_args = ['createsite', 'testsite', '--user-quota', '12']
+        args = self.parser_under_test.parse_args(mock_args)
+        assert args.user_quota == '12', args

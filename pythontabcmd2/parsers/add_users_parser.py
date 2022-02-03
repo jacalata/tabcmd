@@ -9,4 +9,5 @@ class AddUserParser:
         """Method to parse add user arguments passed """
 
         add_user_parser = subparsers.include(command)
-        set_users_file_positional(add_user_parser)
+        add_user_parser.add_argument('groupname', help='name of group to add users to')
+        set_users_file_arg(add_user_parser)
