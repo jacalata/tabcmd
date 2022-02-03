@@ -100,3 +100,17 @@ class CommandsTests(unittest.TestCase):
         parsed_args = Context.parse_inputs(self.parser, test_input)
         assert parsed_args.func == GetUrl
 
+    @mock.patch.object(LoginCommand, 'run_command', autospec=True)
+    @mock.patch.object(Session, 'create_session', autospec=True)
+    def test_login(self, mock_session, mock_function):
+        mock_session.create_session = mock.MagicMock(name='parser.session-mock')
+        test_input = ['login', '--server', 'http://server']
+        parsed_args = Context.parse_inputs(self.parser, test_input)
+        assert parsed_args.func == LoginCommand
+
+    @mock.patch.object(Session, 'create_session', autospec=True)
+    def test_help(self, mock_session):
+        mock_session.create_session = mock.MagicMock(name='parser.session-mock')
+        test_input = ['--help']
+        with self.assertRaises(SystemExit):
+            parsed_args = Context.parse_inputs(self.parser, test_input)

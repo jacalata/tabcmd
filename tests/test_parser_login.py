@@ -16,31 +16,31 @@ class LoginParserTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         commandname = 'login'
-
-        parser = parent_parser.initialize_parser()
-        subparsers = create.Subparsers(parser)
+        subparsers = create.Subparsers()
+        parser = subparsers.get_root_parser()
+        # argparse.ArgumentParser()
+        # self.subparsers = self.parent.add_subparsers()
+        # self.global_options = parent_parser.initialize_parser()
+        # parent_parser.add_global_options(self.global_options)
         mock_command = commandname, LoginParserTest.mock_command_action, 'mock help text'
 
         cls.parser_under_test = parser
         LoginParser.login_parser(subparsers, mock_command)
 
 
-    @mock.patch('argparse.ArgumentParser.parse_args',
-                return_value=argparse.Namespace(
-                    server="https://localhost/",
-                    username="helloworld",
-                    site="",
-                    logging_level="info",
-                    password="testing123",
-                    no_prompt=True, token=None,
-                    token_name=None,
-                    cookie=True,
-                    no_cookie=False,
-                    prompt=False
-                ))
-    def test_login_parser_test_username_password(self, mock_args):
+    def test_login_parser_test_username_password(self):
+        mock_args = ['login', '--username', 'me', '--password', 'pass']
         args = self.parser_under_test.parse_args(mock_args)
         assert args is not None
+
+
+    def test_missing_server(self):
+        mock_args = ['login', '--logging-level', 'info', '--no-prompt', '--password', 'testing123']
+
+
+    def test_username(self):
+        mock_args =['login', '--logging-level', 'info', '--password',
+                        'testing123', '--no_prompt']
 
     """ no required args yet
     @mock.patch('argparse.ArgumentParser.parse_args',

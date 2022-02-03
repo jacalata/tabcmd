@@ -4,10 +4,10 @@ def mock_command_action():
     print('a mockery!')
 
 def initialize_test_pieces(commandname):
-    parser = parent_parser.initialize_parser()
-    subparsers = create.Subparsers(parser)
+    manager = create.Subparsers()
+    parser = manager.get_root_parser()
     mock_command = commandname, mock_command_action, 'mock help text'
-    return parser, subparsers, mock_command
+    return parser, manager, mock_command
 
 """
  base test cases for each parser:
@@ -18,31 +18,3 @@ def initialize_test_pieces(commandname):
  has unknown arguments
  """
 
-class GlobalOptionsTest():
-
-
-    def test_missing_server(self):
-        args = LogoutParser.logout_parser()
-        assert args == argparse.Namespace(
-                                          username="helloworld",
-                                          site="",
-                                          logging_level="info",
-                                          password="testing123",
-                                          no_prompt=True, token=None,
-                                          token_name=None,
-                                          cookie=True,
-                                          no_cookie=False,
-                                          prompt=False)
-
-
-    def test_username(self):
-        args = LogoutParser.logout_parser()
-        assert args == argparse.Namespace(
-            site="",
-            logging_level="info",
-            password="testing123",
-            no_prompt=True, token=None,
-            token_name=None,
-            cookie=True,
-            no_cookie=False,
-            prompt=False)

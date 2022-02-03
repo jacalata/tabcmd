@@ -22,8 +22,8 @@ class ExtractsParserTest(unittest.TestCase):
     def test_parser_extract_parser_missing_project_path(self):
 
         mock_command = 'createextracts', ExtractsParserTest.mock_command_action, 'mock help text'
-        parser = parent_parser.initialize_parser()
-        subparsers = create.Subparsers(parser)
+        subparsers = create.Subparsers()
+        parser = subparsers.get_root_parser()
         create_extracts_parser.CreateExtractsParser().create_extracts_parser(subparsers, mock_command)
 
         no_project_path = ['createextracts', '-d', 'dsname', '-p', '123']
@@ -39,8 +39,8 @@ class ExtractsParserTest(unittest.TestCase):
             '-w', 'workbooktest']
 
         mock_command = 'createextracts', ExtractsParserTest.mock_command_action, 'mock help text'
-        parser = parent_parser.initialize_parser()
-        subparsers = create.Subparsers(parser)
+        subparsers = create.Subparsers()
+        parser = subparsers.get_root_parser()
         create_extracts_parser.CreateExtractsParser().create_extracts_parser(subparsers, mock_command)
 
         args = parser.parse_args(input)
@@ -54,8 +54,8 @@ class ExtractsParserTest(unittest.TestCase):
             '-u', '1234', '-p', 'test123', '-w', '--include_all', 'True']
 
         mock_command = 'createextracts', ExtractsParserTest.mock_command_action, 'mock help text'
-        parser = parent_parser.initialize_parser()
-        subparsers = create.Subparsers(parser)
+        subparsers = create.Subparsers()
+        parser = subparsers.get_root_parser()
         create_extracts_parser.CreateExtractsParser().create_extracts_parser(subparsers, mock_command)
 
         with self.assertRaises(SystemExit):
@@ -67,8 +67,8 @@ class ExtractsParserTest(unittest.TestCase):
             '-u', '1234', '-p', 'test123', '-w', 'testproject', '--include_all', 'True']
 
         mock_command = 'createextracts', ExtractsParserTest.mock_command_action, 'mock help text'
-        parser = parent_parser.initialize_parser()
-        subparsers = create.Subparsers(parser)
+        subparsers = create.Subparsers()
+        parser = subparsers.get_root_parser()
         create_extracts_parser.CreateExtractsParser().create_extracts_parser(subparsers, mock_command)
 
         with self.assertRaises(SystemExit):
@@ -80,8 +80,8 @@ class ExtractsParserTest(unittest.TestCase):
             '-w', 'testproject', '--include_all', 'True']
 
         mock_command = 'createextracts', ExtractsParserTest.mock_command_action, 'mock help text'
-        parser = parent_parser.initialize_parser()
-        subparsers = create.Subparsers(parser)
+        subparsers = create.Subparsers()
+        parser = subparsers.get_root_parser()
         create_extracts_parser.CreateExtractsParser().create_extracts_parser(subparsers, mock_command)
 
         with self.assertRaises(SystemExit):

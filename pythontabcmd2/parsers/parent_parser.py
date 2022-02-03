@@ -17,16 +17,9 @@ Basics of options
 Method naming conventions
 - I have named methods in here aaaa_arg if it returns a value we want, aaa_option if it's a flag
 - all methods in here should return a parser for nice fluent chaining
-"""
 
-def initialize_parser():
-    parser = argparse.ArgumentParser(add_help=False)
-    return parser
-
-
-"""
 All these options can be used with any command.
-Options are listed here in the same order as the 'global optios' list online at
+Options are listed here in the same order as the 'global options' list online at
 https://help.tableau.com/current/server/en-us/tabcmd_cmd.htm#options7
 """
 def add_global_options(parser):
@@ -244,7 +237,10 @@ def set_site_args(parser):
             true to allow users to run tasks manually or false to prevent users from running tasks manually.')
     return parser
 
-
+# only used by listsites
+def set_view_site_encryption(parser):
+    parser.add_argument('--get-extract-encryption-mode', action='store_true',
+        help='Include the extract encryption mode for each site.')
 
 # export --- mmmaaaannnyyyy options
 # publish

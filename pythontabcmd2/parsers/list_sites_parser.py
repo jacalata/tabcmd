@@ -9,4 +9,4 @@ class ListSitesParser:
 
 
         list_sites_parsers = subparsers.include(command)
-        set_encryption_option(list_sites_parsers)
+        set_view_site_encryption(list_sites_parsers)

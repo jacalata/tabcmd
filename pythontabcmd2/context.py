@@ -1,7 +1,9 @@
+import argparse
+import sys
+
 from .map_of_commands import CommandsMap
 
-from .parsers import create
-from .parsers import parent_parser
+from .parsers.create import *
 from .parsers.add_users_parser import AddUserParser
 from .parsers.create_extracts_parser import CreateExtractsParser
 from .parsers.create_group_parser import CreateGroupParser
@@ -36,55 +38,65 @@ class Context:
         return get_logger(__name__, 'debug')
 
     def initialize_parsers():
-        parent = parent_parser.initialize_parser()
-        subparsers = create.Subparsers(parent)
+        manager = Subparsers()
+        parent = manager.get_root_parser()
 
-        AddUserParser.add_user_parser(subparsers, CommandsMap.add_users())
+        AddUserParser.add_user_parser(manager, CommandsMap.add_users())
 
-        CreateExtractsParser.create_extracts_parser(subparsers, CommandsMap.create_extracts())
-        DeleteExtractsParser.delete_extracts_parser(subparsers, CommandsMap.delete_extracts())
+        CreateExtractsParser.create_extracts_parser(manager, CommandsMap.create_extracts())
+        DeleteExtractsParser.delete_extracts_parser(manager, CommandsMap.delete_extracts())
 
-        CreateGroupParser.create_group_parser(subparsers, CommandsMap.create_group())
-        CreateProjectParser.create_project_parser(subparsers, CommandsMap.create_project())
-        CreateSiteParser.create_site_parser(subparsers, CommandsMap.create_site())
-        CreateSiteUsersParser.create_site_users_parser(subparsers, CommandsMap.create_site_users())
-        # parser.parser.user_parser(subparsers, CommandsMap.parser.users())
+        CreateGroupParser.create_group_parser(manager, CommandsMap.create_group())
+        CreateProjectParser.create_project_parser(manager, CommandsMap.create_project())
+        CreateSiteParser.create_site_parser(manager, CommandsMap.create_site())
+        CreateSiteUsersParser.create_site_users_parser(manager, CommandsMap.create_site_users())
 
-        DecryptExtractsParser.decrypt_extracts_parser(subparsers, CommandsMap.decrypt_extracts())
-        DeleteGroupParser.delete_group_parser(subparsers, CommandsMap.delete_group())
-        DeleteParser.delete_parser(subparsers, CommandsMap.delete())
-        DeleteProjectParser.delete_project_parser(subparsers, CommandsMap.delete_project())
-        DeleteSiteParser.delete_site_parser(subparsers, CommandsMap.delete_site())
-        DeleteSiteUsersParser.delete_site_users_parser(subparsers, CommandsMap.delete_site_users())
+        DecryptExtractsParser.decrypt_extracts_parser(manager, CommandsMap.decrypt_extracts())
+        DeleteGroupParser.delete_group_parser(manager, CommandsMap.delete_group())
+        DeleteParser.delete_parser(manager, CommandsMap.delete())
+        DeleteProjectParser.delete_project_parser(manager, CommandsMap.delete_project())
+        DeleteSiteParser.delete_site_parser(manager, CommandsMap.delete_site())
+        DeleteSiteUsersParser.delete_site_users_parser(manager, CommandsMap.delete_site_users())
 
-        EditSiteParser.edit_site_parser(subparsers, CommandsMap.edit_sites())
-        EncryptExtractsParser.encrypt_extracts_parser(subparsers, CommandsMap.encrypt_extracts())
-        ExportParser.export_parser(subparsers, CommandsMap.export())
+        EditSiteParser.edit_site_parser(manager, CommandsMap.edit_sites())
+        EncryptExtractsParser.encrypt_extracts_parser(manager, CommandsMap.encrypt_extracts())
+        ExportParser.export_parser(manager, CommandsMap.export())
 
-        GetUrlParser.get_url_parser(subparsers, CommandsMap.get())
+        GetUrlParser.get_url_parser(manager, CommandsMap.get())
 
-        ListSitesParser.list_site_parser(subparsers, CommandsMap.list_sites())
-        LoginParser.login_parser(subparsers, CommandsMap.login())
-        LogoutParser.logout_parser(subparsers, CommandsMap.logout())
+        ListSitesParser.list_site_parser(manager, CommandsMap.list_sites())
+        LoginParser.login_parser(manager, CommandsMap.login())
+        LogoutParser.logout_parser(manager, CommandsMap.logout())
 
-        PublishParser.publish_parser(subparsers, CommandsMap.publish())
-        PublishSamplesParser.publish_samples_parser(subparsers, CommandsMap.publish_samples())
+        PublishParser.publish_parser(manager, CommandsMap.publish())
+        PublishSamplesParser.publish_samples_parser(manager, CommandsMap.publish_samples())
 
-        ReencryptExtractsParser.reencrypt_extracts_parser(subparsers, CommandsMap.reencrypt_extracts())
-        RefreshExtractsParser.refresh_extracts_parser(subparsers, CommandsMap.refresh_extracts())
-        RemoveUserParser.remove_user_parser(subparsers, CommandsMap.remove_users())
-        # parsers.runschedule_parser(subparsers, CommandsMap.run_schedule())
+        ReencryptExtractsParser.reencrypt_extracts_parser(manager, CommandsMap.reencrypt_extracts())
+        RefreshExtractsParser.refresh_extracts_parser(manager, CommandsMap.refresh_extracts())
+        RemoveUserParser.remove_user_parser(manager, CommandsMap.remove_users())
+        # parsers.runschedule_parser(manager, CommandsMap.run_schedule())
 
         return parent
 
-    # allow passing in test inputs
+    # during normal execution, leaving input as none will default to sys.argv
+    # for testing, we want to be able to pass in different updates
     def parse_inputs(parser, input=None):
+
+        if input is None and len(sys.argv) <= 1:
+            # no arguments given
+            parser.print_help()
+            sys.exit(0)
+
         namespace = parser.parse_args(input)
-        print(namespace)
+
+        # arguments did not match any command
+        if not namespace.func:
+            parser.print_help()
+            sys.exit(1)
+
         # if a subcommand was identified, call the function assigned to it
         # https://stackoverflow.com/questions/49038616/argparse-subparsers-with-functions
-
-        # at this point, we probably don't need to have the separate init/run calls
+        # we probably don't need to have the separate init/run calls any more
         namespace.func(namespace).run_command(namespace)
         return namespace
 

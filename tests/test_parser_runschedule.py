@@ -10,8 +10,8 @@ class RunScheduleParserTest(unittest.TestCase):
     def test_runschedule_parser_optional_arguments(self):
         mock_command = 'runschedule', RunScheduleParserTest.mock_command_action, 'mock help text'
         input = []
-        parser = create.parent_parser.initialize_parser()
-        # no runschedule parser yet
+        subparsers = create.Subparsers()
+        parser = subparsers.get_root_parser()
 
         # parser.runschedule_parser(mock_command)
         args = parser.parse_args(input)
