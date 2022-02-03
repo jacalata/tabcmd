@@ -84,6 +84,7 @@ class Context:
         # if a subcommand was identified, call the function assigned to it
         # https://stackoverflow.com/questions/49038616/argparse-subparsers-with-functions
 
+        # at this point, we probably don't need to have the separate init/run calls
         namespace.func(namespace).run_command(namespace)
         return namespace
 

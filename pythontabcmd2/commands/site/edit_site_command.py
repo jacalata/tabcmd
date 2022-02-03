@@ -12,22 +12,21 @@ class EditSiteCommand(SiteCommand):
     running certain tasks manually.
     """
 
-    def __init__(self, args, admin_mode, current_site_id):
-        super().__init__(args)
-        self.current_site = current_site_id
+    def __init__(self, args):
+        self.current_site = ''
         self.site_id = args.site_id
-        self.site_name = args.site_name
-        self.admin_mode = admin_mode
+        self.site_name = args.sitename
+        self.admin_mode = SiteCommand.get_site_mode(args)
         self.status = args.status
-        self.url = args.url
+        # not an argument for edit site self.url = args.url
         self.extract_encryption_mode = args.extract_encryption_mode
         self.run_now_enabled = args.run_now_enabled
         self.user_quota = args.user_quota
         self.storage_quota = args.storage_quota
         self.logger = log('pythontabcmd2.edit_site_command',
-                          self.logging_level)
+                          args.logging_level)
 
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
         server_object = session.create_session(self.args)
         self.edit_site(server_object)

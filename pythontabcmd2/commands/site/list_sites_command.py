@@ -9,16 +9,10 @@ class ListSiteCommand(SiteCommand):
     Command to return a list of sites to which the logged in user belongs
     """
     def __init__(self, args):
-        super().__init__(args)
         self.logger = log('pythontabcmd2.list_sites_command',
-                          self.logging_level)
+                          args.logging_level)
 
-    @classmethod
-    def parse(cls):
-        args = ListSitesParser.list_site_parser()
-        return cls(args)
-
-    def run_command(self):
+    def run_command(self, args):
         session = Session()
         server_object = session.create_session(self.args)
         self.list_sites(server_object)

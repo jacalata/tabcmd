@@ -10,9 +10,8 @@ class CreateGroupCommand(GroupCommand):
     This command is used to create a group
     """
     def __init__(self, args):
-        super().__init__(args)
         self.logger = log('pythontabcmd2.create_group_command',
-                          self.logging_level)
+                          args.logging_level)
 
     def run_command(self, args):
         session = Session()

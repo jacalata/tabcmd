@@ -10,9 +10,8 @@ class GetUrl(DatasourcesAndWorkbooks):
     This command gets the resource from Tableau Server that's represented
     by the specified (partial) URL. The result is returned as a file.
     """
-    def __init__(self, args, url):
-        super().__init__(args)
-        self.url = url
+    def __init__(self, args):
+        self.url = args.url
         self.logging_level = args.logging_level
         self.logger = log('pythontabcmd2.get_url_command',
                           self.logging_level)

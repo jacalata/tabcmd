@@ -9,13 +9,12 @@ class CreateProjectCommand(ProjectCommand):
     """
     Command to create a project
     """
-    def __init__(self, args, evaluated_project_path):
-        super().__init__(args, evaluated_project_path)
+    def __init__(self, args):
         self.args = args
         self.description = args.description
         self.content_permission = args.content_permission
         self.logger = log('pythontabcmd2.create_project_command',
-                          self.logging_level)
+                          args.logging_level)
 
     def run_command(self, args):
         session = Session()

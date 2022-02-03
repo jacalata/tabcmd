@@ -10,11 +10,11 @@ class PublishSamplesCommand(ProjectCommand):
     Any existing samples will be overwritten.
     """
 
-    def __init__(self, args, evaluated_project_path):
-        super().__init__(args, evaluated_project_path)
+    def __init__(self, args):
+        super().__init__(args)
         self.args = args
         self.logger = log('pythontabcmd2.publish_samples_command',
-                          self.logging_level)
+                          args.logging_level)
 
 
     def run_command(self, args):

@@ -2,12 +2,8 @@ from ..commands import Commands
 
 
 class SiteCommand(Commands):
-    """
-    Acts as a base class for site related group of commands
-    """
-    def __init__(self, args):
-        super().__init__(args)
-        self.args = args
+
+
 
     @staticmethod
     def find_site_id(server, site_name):
@@ -20,3 +16,11 @@ class SiteCommand(Commands):
                 site_id = site[1]
                 break
         return site_id
+
+
+    @staticmethod
+    def get_site_mode(args):
+        if args.site_admin_user_management:
+            return 'ContentAndUsers'
+        else:
+            return 'ContentOnly'

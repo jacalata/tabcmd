@@ -10,12 +10,11 @@ class PublishCommand(DatasourcesAndWorkbooks):
     This command publishes the specified workbook (.twb(x)), data source
     (.tds(x)), or extract (.hyper) to Tableau Server.
     """
-    def __init__(self, args, evaluated_project_path, source, filename):
-        super().__init__(args)
-        self.file_name = filename
-        self.file_path = source
-        self.project_path = evaluated_project_path
-        self.source = self.get_source_type(source)
+    def __init__(self, args):
+        self.file_name = args.name
+        # ?? self.file_path = source
+        self.project_path = args.parent_project_path
+        # self.source = self.get_source_type(source)
         self.logging_level = args.logging_level
         self.logger = log('pythontabcmd2.publish',
                           self.logging_level)

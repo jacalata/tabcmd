@@ -1,5 +1,8 @@
 
 
+from pythontabcmd2.parsers.parent_parser import set_parent_project_arg
+
+
 class PublishParser():
     """Parser to the command publish"""
     @staticmethod
@@ -14,8 +17,10 @@ class PublishParser():
                                          'data source, or data extract '
                                          'if it already exists on '
                                          'the server.')
-        # make overwrite and append flags mutually exclusive
+        # TODO make overwrite and append flags mutually exclusive
+        set_parent_project_arg(publish_parser)
         publish_parser.add_argument('--project', '-r', default=None,
+                                   dest = 'projectname',
                                     help='Publishes the workbook, '
                                          'data source, or data extract'
                                          ' into the specified project')

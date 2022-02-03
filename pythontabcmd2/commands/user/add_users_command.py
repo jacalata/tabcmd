@@ -10,11 +10,10 @@ class AddUserCommand():
     Command to Adds users to a specified group
     """
     def __init__(self, args):
-        super().__init__(args)
         self.args = args
         self.group = args.groupname
         self.logger = log('pythontabcmd2.add_user_command',
-                          self.logging_level)
+                          args.logging_level)
 
     def run_command(self, args):
         session = Session()

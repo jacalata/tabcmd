@@ -3,14 +3,13 @@ from ..commands import Commands
 
 class ProjectCommand(Commands):
 
-    def __init__(self, args, evaluated_project_path):
+    def __init__(self, args):
         """
         Project Command class acts as a base class for the project related
         commands
         """
         super().__init__(args)
         self.name = args.name
-        self.parent_path_name = evaluated_project_path
         self.args = args
 
     @staticmethod

@@ -9,10 +9,10 @@ class DeleteProjectCommand(ProjectCommand):
     """
     Command to Delete the specified project from the server
     """
-    def __init__(self, args, evaluated_project_path):
-        super().__init__(args, evaluated_project_path)
+    def __init__(self, args):
+        super().__init__(args)
         self.logger = log('pythontabcmd2.delete_project_command',
-                          self.logging_level)
+                          args.logging_level)
 
     def run_command(self, args):
         session = Session()
