@@ -43,4 +43,3 @@ class TabcmdController:
         # https://stackoverflow.com/questions/49038616/argparse-subparsers-with-functions
         namespace.func(namespace).run_command(namespace)
         return namespace
-    
