@@ -1,5 +1,4 @@
 from tabcmd.execution.tabcmd_controller import TabcmdController
-from tabcmd.execution.context import Context
 import sys
 
 
@@ -10,9 +9,8 @@ def main():
                           sys.version_info + " - please update your python version.")
 
     tabcmd_controller = TabcmdController()
-    parser = tabcmd_controller.initialize_parsers()
-    command_context = Context(parser)
-    command_context.parse_inputs()
+    tabcmd_controller.initialize_parsers()
+    tabcmd_controller.parse_inputs()
 
 
 if __name__ == "__main__":
