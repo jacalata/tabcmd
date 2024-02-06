@@ -19,8 +19,8 @@ jobs:
     # Runs a single command using the runners shell
     - name: Run latest windows executable
       run: |
-        pwd
-        dir
+        echo pwd
+        echo dir
         curl -0 https://github.com/tableau/tabcmd/actions/runs/7790166884/artifacts/1221555112
-        dir
+        echo dir
         tabcmd.exe -v
