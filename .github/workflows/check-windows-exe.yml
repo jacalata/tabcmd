@@ -12,7 +12,7 @@ on:
 jobs:
   validate-executable:
     # The type of runner that the job will run on
-    runs-on: windows-latest
+    runs-on: [windows-latest, windows-2019]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -20,4 +20,4 @@ jobs:
     - name: Run latest windows executable
       run: |
         curl -0 https://github.com/tableau/tabcmd/actions/runs/7790166884/artifacts/1221555112
-        ./tabcmd.exe -v
+        tabcmd.exe -v
