@@ -9,8 +9,9 @@ name: Release-Executable
 # https://anshumanfauzdar.medium.com/using-github-actions-to-bundle-python-application-into-a-single-package-and-automatic-release-834bd42e0670
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - '*'
   workflow_dispatch:
 
 jobs:
@@ -28,20 +29,7 @@ jobs:
               pyinstaller tabcmd-windows.spec --clean --noconfirm --distpath ./dist/windows
             OUT_FILE_NAME: tabcmd.exe
             ASSET_MIME: application/vnd.microsoft.portable-executable
-          - os: macos-latest
-            TARGET: macos
-            CMD_BUILD:  >
-              pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/macos
-            OUT_FILE_NAME: tabcmd.app
-            ASSET_MIME: application/zip
-          - os: ubuntu-latest
-            TARGET: ubuntu
-          # https://stackoverflow.com/questions/31259856
-          # /how-to-create-an-executable-file-for-linux-machine-using-pyinstaller
-            CMD_BUILD: >
-              pyinstaller --clean -y --distpath ./dist/ubuntu tabcmd-linux.spec &&
-              chown -R --reference=. ./dist/ubuntu
-            OUT_FILE_NAME: tabcmd
+
 
     steps:
     - uses: actions/checkout@v3
@@ -52,6 +40,7 @@ jobs:
 
     - name: Install dependencies and build
       run: |
+        echo ${{github.ref_name}}
         python --version
         python -m pip install --upgrade pip
         python -m pip install --upgrade build
