@@ -27,7 +27,7 @@ jobs:
             TARGET: windows
             CMD_BUILD: >
               pyinstaller tabcmd-windows.spec --clean --noconfirm --distpath ./dist/windows
-            OUT_FILE_NAME: tabcmd.exe
+            OUT_FILE_NAME: tabcmd+${{github.ref_name}}.exe
             ASSET_MIME: application/vnd.microsoft.portable-executable
 
 
@@ -58,3 +58,11 @@ jobs:
     - uses: actions/upload-artifact@v3
       with:
         path: ./dist/${{ matrix.TARGET }}/${{ matrix.OUT_FILE_NAME }}/
+
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: ./dist/${{ matrix.TARGET }}/${{ matrix.OUT_FILE_NAME }}/
+        tag: ${{ github.ref_name }}
+        overwrite: true
