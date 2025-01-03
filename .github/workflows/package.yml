@@ -1,9 +1,8 @@
-name: Package-and-release
+name: Release-Executable
 
 # Pyinstaller requires that executables for each OS are built on that OS
 # This action is intended to build on each of the supported OS's: mac, windows, linux.
-# (We run two macos versions to build for arm and x64)
-# and then upload all four files to a new release
+# and then upload all three files to a new release
 
 # reference material:
 # https://data-dive.com/multi-os-deployment-in-cloud-using-pyinstaller-and-github-actions
@@ -16,6 +15,7 @@ on:
   workflow_dispatch:
 
 jobs:
+
   buildexe:
     name: Build executables and upload them to the existing release
     runs-on: ${{ matrix.os }}
@@ -29,50 +29,22 @@ jobs:
               pyinstaller tabcmd-windows.spec --clean --noconfirm --distpath ./dist/windows
             OUT_FILE_NAME: tabcmd.exe
             ASSET_MIME: application/vnd.microsoft.portable-executable
-            CMD_INVOKE:  >
-              ./dist/windows/tabcmd.exe
           - os: macos-13
-            TARGET: macos-x86
-            CMD_BUILD:  |
-              pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/macos-x86/
-              cd dist/macos-x86/tabcmd.app/Contents/MacOS
-              mv tabcmd tabcmd_cli
-              
-              cat << EOF > tabcmd
-              #!/bin/bash
-              # This is the launcher for OSX, this way the app will be opened
-              # when you double click it from the apps folder
-              open -n /Applications/tabcmd.app/Contents/MacOS/tabcmd_cli
-              EOF
-      
-              chmod +x tabcmd
+            TARGET: macos
+            CMD_BUILD:  >
+              pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/macos/
             BUNDLE_NAME: tabcmd.app
             OUT_FILE_NAME: tabcmd.app
             APP_BINARY_FILE_NAME: tabcmd
             ASSET_MIME: application/zip
-            CMD_INVOKE:  >
-              ./dist/macos-x86/tabcmd.app/Contents/MacOS/tabcmd
           - os: macos-latest
-            TARGET: macos-arm
-            CMD_BUILD:  |
-              pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/macos-arm/
-              cd dist/macos-arm/tabcmd.app/Contents/MacOS
-              mv tabcmd tabcmd_cli
-              
-              cat << EOF > tabcmd
-              #!/bin/bash
-              # This is the launcher for OSX, this way the app will be opened
-              # when you double click it from the apps folder
-              open -n /Applications/tabcmd.app/Contents/MacOS/tabcmd_cli
-              EOF
-      
-              chmod +x tabcmd
-            BUNDLE_NAME: tabcmd.app
+            TARGET: macos
+            CMD_BUILD:  >
+              pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/macos/
+            BUNDLE_NAME: tabcmd_arm64.app
             OUT_FILE_NAME: tabcmd.app
             APP_BINARY_FILE_NAME: tabcmd
             ASSET_MIME: application/zip
-            CMD_INVOKE: >
-              ./dist/macos-arm/tabcmd.app/Contents/MacOS/tabcmd
           - os: ubuntu-latest
             TARGET: ubuntu
           # https://stackoverflow.com/questions/31259856
@@ -81,8 +53,6 @@ jobs:
               pyinstaller --clean -y --distpath ./dist/ubuntu tabcmd-linux.spec &&
               chown -R --reference=. ./dist/ubuntu
             OUT_FILE_NAME: tabcmd
-            CMD_INVOKE:  >
-              ./dist/ubuntu/tabcmd
 
     steps:
     - uses: actions/checkout@v4
@@ -101,51 +71,44 @@ jobs:
         doit version
         python -m build
 
-    - name: Build executable with pyinstaller for ${{matrix.TARGET}}
-      if: matrix.TARGET != 'macos-x86' && matrix.TARGET != 'macos-arm'
+    - name: Package with pyinstaller for ${{matrix.TARGET}}
       run: ${{matrix.CMD_BUILD}}
 
-    
-    - name: (Mac) Build executable with pyinstaller for ${{matrix.TARGET}}   
-      if: matrix.TARGET == 'macos-x86' || matrix.TARGET == 'macos-arm'
-      run:  |
-        pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/${{matrix.TARGET}}/
-        cd dist/${{matrix.TARGET}}/${{matrix.BUNDLE_NAME}}/Contents/MacOS
-        pwd
-        mv ${{ matrix.APP_BINARY_FILE_NAME }} tabcmd_cli
-        
-        cat << EOF > ${{ matrix.OUT_FILE_NAME }}
-        #!/bin/bash
-        # This is the launcher for OSX, this way the app will be opened
-        # when you double click it from the apps folder
-        open -n /Applications/${{matrix.BUNDLE_NAME}}/Contents/MacOS/tabcmd_cli
-        EOF
+    - name: Validate package for ${{matrix.TARGET}}
+      if: matrix.TARGET != 'macos'
+      run: ./dist/${{ matrix.TARGET }}/${{matrix.OUT_FILE_NAME}}
 
-        chmod +x ${{ matrix.OUT_FILE_NAME }}
+    - name: Validate package for Mac
+      if: matrix.TARGET == 'macos'
+      run: ./dist/${{ matrix.TARGET }}/${{ matrix.OUT_FILE_NAME }}/Contents/MacOS/${{ matrix.APP_BINARY_FILE_NAME }}
 
-
-    - name: (Mac) Zip executable for ${{matrix.TARGET}}   
-      if: matrix.TARGET == 'macos-x86' || matrix.TARGET == 'macos-arm'
-      run:  |
+    - name: Tar app bundle for Mac
+      if: matrix.TARGET == 'macos'
+      run: |
         rm -f dist/${{ matrix.TARGET }}/${{ matrix.APP_BINARY_FILE_NAME }}
         cd dist/${{ matrix.TARGET }}
         tar -cvf ${{ matrix.BUNDLE_NAME }}.tar ${{ matrix.OUT_FILE_NAME }}
-      
-    - name: Validate executable for ${{matrix.TARGET}}
-      run: ./dist/${{matrix.TARGET}}/${{ matrix.OUT_FILE_NAME }}
-      
-    - name: Upload binary
+
+    - name: Upload artifact
+      if: matrix.TARGET != 'macos'
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ matrix.OUT_FILE_NAME }}
+        name: ${{ matrix.OUT_FILE_NAME }}-${{ matrix.os }}
         path: ./dist/${{ matrix.TARGET }}/${{ matrix.OUT_FILE_NAME }}
+        
+    - name: Upload artifact for Mac 
+      if: matrix.TARGET == 'macos'
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.BUNDLE_NAME }}-${{ matrix.os }}
+        path: ./dist/${{ matrix.TARGET }}/${{ matrix.BUNDLE_NAME }}.tar
     
-    - name: Copy binary to release
+    - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: ./dist/${{ matrix.TARGET }}/${{ matrix.OUT_FILE_NAME }}
-        asset_name: ${{ matrix.TARGET }}-${{ matrix.OUT_FILE_NAME }}
+        file: ./dist/${{ matrix.TARGET }}/${{ matrix.OUT_FILE_NAME }}/
         tag: ${{ github.ref_name }}
         overwrite: true
         promote: true
+
