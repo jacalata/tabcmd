@@ -102,7 +102,25 @@ jobs:
         python -m build
 
     - name: Build executable with pyinstaller for ${{matrix.TARGET}}
+      if: matrix.TARGET != 'macos-x86' && matrix.TARGET != 'macos-arm'
       run: ${{matrix.CMD_BUILD}}
+
+    
+    - name: (Mac) Build executable with pyinstaller for ${{matrix.TARGET}}   
+      if: matrix.TARGET == 'macos-x86' || matrix.TARGET == 'macos-arm'
+      run:  |
+        pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/${{matrix.TARGET}}/
+        cd dist/${{matrix.TARGET}}/${{matrix.BUNDLE_NAME}}/Contents/MacOS
+        mv ${{ matrix.OUT_FILE_NAME }} tabcmd_cli
+        
+        cat << EOF > ${{ matrix.OUT_FILE_NAME }}
+        #!/bin/bash
+        # This is the launcher for OSX, this way the app will be opened
+        # when you double click it from the apps folder
+        open -n /Applications/${{matrix.BUNDLE_NAME}}/Contents/MacOS/tabcmd_cli
+        EOF
+
+        chmod +x ${{ matrix.OUT_FILE_NAME }}
       
     - name: Validate executable for ${{matrix.TARGET}}
       run: ${{matrix.CMD_INVOKE}}
