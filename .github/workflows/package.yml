@@ -124,7 +124,7 @@ jobs:
         chmod +x ${{ matrix.OUT_FILE_NAME }}
       
     - name: Validate executable for ${{matrix.TARGET}}
-      run: ${{matrix.CMD_INVOKE}}
+      run: ./dist/${{matrix.TARGET}}/${{ matrix.OUT_FILE_NAME }}
       
     - name: Upload binary
       uses: actions/upload-artifact@v4
