@@ -111,7 +111,7 @@ jobs:
       run:  |
         pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/${{matrix.TARGET}}/
         cd dist/${{matrix.TARGET}}/${{matrix.BUNDLE_NAME}}/Contents/MacOS
-        ls
+        pwd
         mv ${{ matrix.APP_BINARY_FILE_NAME }} tabcmd_cli
         
         cat << EOF > ${{ matrix.OUT_FILE_NAME }}
@@ -122,6 +122,14 @@ jobs:
         EOF
 
         chmod +x ${{ matrix.OUT_FILE_NAME }}
+
+
+    - name: (Mac) Zip executable for ${{matrix.TARGET}}   
+      if: matrix.TARGET == 'macos-x86' || matrix.TARGET == 'macos-arm'
+      run:  |
+        rm -f dist/${{ matrix.TARGET }}/${{ matrix.APP_BINARY_FILE_NAME }}
+        cd dist/${{ matrix.TARGET }}
+        tar -cvf ${{ matrix.BUNDLE_NAME }}.tar ${{ matrix.OUT_FILE_NAME }}
       
     - name: Validate executable for ${{matrix.TARGET}}
       run: ./dist/${{matrix.TARGET}}/${{ matrix.OUT_FILE_NAME }}
