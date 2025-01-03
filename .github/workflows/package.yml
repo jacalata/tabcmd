@@ -83,7 +83,7 @@ jobs:
       run: ${{matrix.CMD_BUILD}}
 
     - name: Package mac executable
-      if: matrix.TARGET == 'macos'
+      if: matrix.TARGET == 'macos-x86' || matrix.TARGET == 'macos-arm'
       run: |
         cd tabcmd/dist/$APP_NAME.app/Contents/MacOS
         mv $APP_NAME ${APP_NAME}_cli
