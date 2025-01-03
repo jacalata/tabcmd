@@ -33,7 +33,7 @@ jobs:
             TARGET: macos
             CMD_BUILD:  >
               pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/macos/
-            BUNDLE_NAME: tabcmd.app
+            BUNDLE_NAME: tabcmd-x86.app
             OUT_FILE_NAME: tabcmd.app
             APP_BINARY_FILE_NAME: tabcmd
             ASSET_MIME: application/zip
@@ -87,26 +87,13 @@ jobs:
       run: |
         rm -f dist/${{ matrix.TARGET }}/${{ matrix.APP_BINARY_FILE_NAME }}
         cd dist/${{ matrix.TARGET }}
-        tar -cvf ${{ matrix.BUNDLE_NAME }}.tar ${{ matrix.OUT_FILE_NAME }}
-
-    - name: Upload artifact
-      if: matrix.TARGET != 'macos'
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ matrix.OUT_FILE_NAME }}-${{ matrix.os }}
-        path: ./dist/${{ matrix.TARGET }}/${{ matrix.OUT_FILE_NAME }}
-        
-    - name: Upload artifact for Mac 
-      if: matrix.TARGET == 'macos'
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ matrix.BUNDLE_NAME }}-${{ matrix.os }}
-        path: ./dist/${{ matrix.TARGET }}/${{ matrix.BUNDLE_NAME }}.tar
+        tar -cvf ${{ matrix.OUT_FILE_NAME }} ${{ matrix.OUT_FILE_NAME }}
     
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
+        name: ${{ matrix.os }}-${{ matrix.OUT_FILE_NAME }}
         file: ./dist/${{ matrix.TARGET }}/${{ matrix.OUT_FILE_NAME }}
         tag: ${{ github.ref_name }}
         overwrite: true
