@@ -27,14 +27,14 @@ jobs:
             TARGET: windows
             CMD_BUILD: >
               pyinstaller tabcmd-windows.spec --clean --noconfirm --distpath ./dist/windows
-            OUT_FILE_NAME: tabcmd.exe
+            UPLOAD_FILE_NAME: tabcmd.exe
             ASSET_MIME: application/vnd.microsoft.portable-executable
           - os: macos-13
             TARGET: macos
             CMD_BUILD:  >
               pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/macos/
-            BUNDLE_NAME: tabcmd-x86.app
-            PACKAGE_NAME: tabcmd-x86.app.tar
+            # the extension .app is not allowed as an upload by github
+            UPLOAD_FILE_NAME: tabcmd-x86.app.tar
             # these two names must match the output defined in tabcmd-mac.spec
             OUT_FILE_NAME: tabcmd.app
             APP_BINARY_FILE_NAME: tabcmd
@@ -44,7 +44,7 @@ jobs:
             TARGET: macos
             CMD_BUILD:  >
               pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/macos/
-            BUNDLE_NAME: tabcmd_arm64.app
+            UPLOAD_FILE_NAME: tabcmd_arm64.app.tar
             OUT_FILE_NAME: tabcmd.app
             APP_BINARY_FILE_NAME: tabcmd
             ASSET_MIME: application/zip
@@ -56,6 +56,7 @@ jobs:
               pyinstaller --clean -y --distpath ./dist/ubuntu tabcmd-linux.spec &&
               chown -R --reference=. ./dist/ubuntu
             OUT_FILE_NAME: tabcmd
+            UPLOAD_FILE_NAME: tabcmd-ubuntu
 
     steps:
     - uses: actions/checkout@v4
@@ -90,15 +91,13 @@ jobs:
       run: |
         rm -f dist/${{ matrix.TARGET }}/${{ matrix.APP_BINARY_FILE_NAME }}
         cd dist/${{ matrix.TARGET }}
-        tar -cvf ${{ matrix.BUNDLE_NAME }} ${{ matrix.OUT_FILE_NAME }}
-        mv ${{ matrix.OUT_FILE_NAME }} scrap
-        mv ${{ matrix.BUNDLE_NAME }} ${{ matrix.OUT_FILE_NAME }}
+        tar -cvf ${{ matrix.UPLOAD_FILE_NAME }} ${{ matrix.OUT_FILE_NAME }}
     
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        asset_name: ${{ matrix.os }}-${{ matrix.OUT_FILE_NAME }}
+        asset_name: ${{ matrix.UPLOAD_FILE_NAME }}
         file: ./dist/${{ matrix.TARGET }}/${{ matrix.OUT_FILE_NAME }}
         tag: ${{ github.ref_name }}
         overwrite: true
