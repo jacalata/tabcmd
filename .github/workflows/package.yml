@@ -85,17 +85,17 @@ jobs:
     - name: Package mac executable
       if: matrix.TARGET == 'macos-x86' || matrix.TARGET == 'macos-arm'
       run: |
-        cd tabcmd/dist/$APP_NAME.app/Contents/MacOS
-        mv $APP_NAME ${APP_NAME}_cli
+        cd tabcmd/dist/tabcmd.app/Contents/MacOS
+        mv tabcmd tabcmd_cli
         
-        cat << EOF > $APP_NAME
+        cat << EOF > tabcmd
         #!/bin/bash
         # This is the launcher for OSX, this way the app will be opened
         # when you double click it from the apps folder
-        open -n /Applications/${APP_NAME}.app/Contents/MacOS/${APP_NAME}_cli
+        open -n /Applications/tabcmd.app/Contents/MacOS/tabcmd_cli
         EOF
 
-        chmod +x $APP_NAME
+        chmod +x tabcmd
       
     - name: Validate executable for ${{matrix.TARGET}}
       run: ${{matrix.CMD_INVOKE}}
