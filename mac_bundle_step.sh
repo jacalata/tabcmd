@@ -4,7 +4,7 @@
 # https://github.com/pyinstaller/pyinstaller/issues/5154#issuecomment-2508011279
 APP_NAME="tabcmd"
 
-cd dist/$APP_NAME.app/Contents/MacOS
+cd dist/macos/$APP_NAME.app/Contents/MacOS
 mv $APP_NAME ${APP_NAME}_cli
 
 cat << EOF > $APP_NAME
