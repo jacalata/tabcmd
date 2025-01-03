@@ -34,6 +34,8 @@ jobs:
             CMD_BUILD:  >
               pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/macos/
             BUNDLE_NAME: tabcmd-x86.app
+            PACKAGE_NAME: tabcmd-x86.app.tar
+            # these two names must match the output defined in tabcmd-mac.spec
             OUT_FILE_NAME: tabcmd.app
             APP_BINARY_FILE_NAME: tabcmd
             ASSET_MIME: application/zip
@@ -87,7 +89,9 @@ jobs:
       run: |
         rm -f dist/${{ matrix.TARGET }}/${{ matrix.APP_BINARY_FILE_NAME }}
         cd dist/${{ matrix.TARGET }}
-        tar -cvf ${{ matrix.OUT_FILE_NAME }} ${{ matrix.OUT_FILE_NAME }}
+        tar -cvf ${{ matrix.BUNDLE_NAME }} ${{ matrix.OUT_FILE_NAME }}
+        del ${{ matrix.OUT_FILE_NAME }}
+        mv ${{ matrix.BUNDLE_NAME }} ${{ matrix.OUT_FILE_NAME }}
     
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
