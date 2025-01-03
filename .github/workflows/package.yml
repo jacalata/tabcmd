@@ -85,7 +85,7 @@ jobs:
     - name: Package mac executable
       if: matrix.TARGET == 'macos-x86' || matrix.TARGET == 'macos-arm'
       run: |
-        cd tabcmd/dist/tabcmd.app/Contents/MacOS
+        cd dist/tabcmd.app/Contents/MacOS
         mv tabcmd tabcmd_cli
         
         cat << EOF > tabcmd
