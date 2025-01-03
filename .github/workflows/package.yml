@@ -1,8 +1,8 @@
-name: Release-Executable
+name: Package and upload executables
 
 # Pyinstaller requires that executables for each OS are built on that OS
-# This action is intended to build on each of the supported OS's: mac, windows, linux.
-# and then upload all three files to a new release
+# This action is intended to build on each of the supported OS's: mac (x86 and arm), windows, linux.
+# and then upload all four files to a new release
 
 # reference material:
 # https://data-dive.com/multi-os-deployment-in-cloud-using-pyinstaller-and-github-actions
@@ -28,6 +28,7 @@ jobs:
             CMD_BUILD: >
               pyinstaller tabcmd-windows.spec --clean --noconfirm --distpath ./dist/windows
             UPLOAD_FILE_NAME: tabcmd.exe
+            OUT_FILE_NAME: tabcmd.exe
             ASSET_MIME: application/vnd.microsoft.portable-executable
           - os: macos-13
             TARGET: macos
