@@ -111,7 +111,8 @@ jobs:
       run:  |
         pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/${{matrix.TARGET}}/
         cd dist/${{matrix.TARGET}}/${{matrix.BUNDLE_NAME}}/Contents/MacOS
-        mv ${{ matrix.OUT_FILE_NAME }} tabcmd_cli
+        ls
+        mv ${{ matrix.APP_BINARY_FILE_NAME }} tabcmd_cli
         
         cat << EOF > ${{ matrix.OUT_FILE_NAME }}
         #!/bin/bash
