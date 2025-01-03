@@ -35,8 +35,6 @@ jobs:
             TARGET: macos-x86
             CMD_BUILD:  |
               pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/macos/
-              chmod 755 mac_bundle_step.sh
-              ./mac_bundle_step.sh
             BUNDLE_NAME: tabcmd.app
             OUT_FILE_NAME: tabcmd.app
             APP_BINARY_FILE_NAME: tabcmd
@@ -47,8 +45,6 @@ jobs:
             TARGET: macos-arm
             CMD_BUILD:  |
               pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/macos/
-              chmod 755 mac_bundle_step.sh
-              ./mac_bundle_step.sh
             BUNDLE_NAME: tabcmd.app
             OUT_FILE_NAME: tabcmd.app
             APP_BINARY_FILE_NAME: tabcmd
@@ -85,6 +81,21 @@ jobs:
 
     - name: Build executable with pyinstaller for ${{matrix.TARGET}}
       run: ${{matrix.CMD_BUILD}}
+
+    - name: Package mac executable
+      if: matrix.TARGET == 'macos'
+      run: |
+        cd tabcmd/dist/$APP_NAME.app/Contents/MacOS
+        mv $APP_NAME ${APP_NAME}_cli
+        
+        cat << EOF > $APP_NAME
+        #!/bin/bash
+        # This is the launcher for OSX, this way the app will be opened
+        # when you double click it from the apps folder
+        open -n /Applications/${APP_NAME}.app/Contents/MacOS/${APP_NAME}_cli
+        EOF
+
+        chmod +x $APP_NAME
       
     - name: Validate executable for ${{matrix.TARGET}}
       run: ${{matrix.CMD_INVOKE}}
