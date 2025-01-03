@@ -35,9 +35,7 @@ jobs:
             TARGET: macos-x86
             CMD_BUILD:  |
               pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/macos/
-              ls
-              pwd
-              ./mac_bundle_step.sh
+              bash mac_bundle_step.sh
             BUNDLE_NAME: tabcmd.app
             OUT_FILE_NAME: tabcmd.app
             APP_BINARY_FILE_NAME: tabcmd
@@ -48,9 +46,7 @@ jobs:
             TARGET: macos-arm
             CMD_BUILD:  |
               pyinstaller tabcmd-mac.spec --clean --noconfirm --distpath ./dist/macos/
-              ls
-              pwd
-              ./mac_bundle_step.sh
+              bash mac_bundle_step.sh
             BUNDLE_NAME: tabcmd.app
             OUT_FILE_NAME: tabcmd.app
             APP_BINARY_FILE_NAME: tabcmd
