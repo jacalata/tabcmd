@@ -57,7 +57,7 @@ jobs:
               pyinstaller --clean -y --distpath ./dist/ubuntu tabcmd-linux.spec &&
               chown -R --reference=. ./dist/ubuntu
             OUT_FILE_NAME: tabcmd
-            UPLOAD_FILE_NAME: tabcmd-ubuntu
+            UPLOAD_FILE_NAME: tabcmd
 
     steps:
     - uses: actions/checkout@v4
