@@ -10,7 +10,7 @@ tabcmd = ["tabcmd.locales/**/*.mo"]
 [tool.black]
 line-length = 120
 required-version = 22
-target-version = ['py39', 'py310', 'py311', 'py313'] # black doesn't like 3.12
+target-version = ['py39', 'py310', 'py311'] # have to upgrade black to run on later versions
 extend-exclude = '^/bin/*'
 [tool.mypy]
 disable_error_code = [
