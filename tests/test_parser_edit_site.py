@@ -1,9 +1,6 @@
 import unittest
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 import argparse
 from tabcmd.parsers.edit_site_parser import EditSiteParser
 from .common_setup import *

@@ -1,10 +1,7 @@
 import sys
 import unittest
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 import argparse
 from tabcmd.parsers.delete_parser import DeleteParser
 from .common_setup import *

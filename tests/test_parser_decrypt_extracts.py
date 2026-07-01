@@ -1,9 +1,6 @@
 import unittest
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
+from unittest import mock
 import argparse
 from tabcmd.parsers.decrypt_extracts_parser import DecryptExtractsParser
 from .common_setup import *
