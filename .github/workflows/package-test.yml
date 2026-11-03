@@ -1,0 +1,71 @@
+name: Package-Test
+
+# Builds the sdist and wheel, checks their contents, installs each into a clean virtualenv on
+# every OS/python combination, and runs the credential-free smoke test against the installed command.
+# The PyInstaller executables are smoke-tested by package.yml, which builds them.
+# No secrets or live server are used.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - development
+    paths:
+      - pyproject.toml
+      - setup.py
+      - '*.spec'
+      - 'tabcmd/locales/**'
+      - 'tests/packaging/**'
+      - '.github/workflows/package*.yml'
+
+jobs:
+  dists:
+    name: ${{ matrix.os }} / python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ['3.10', '3.12', '3.14']
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        fetch-depth: 0  # setuptools_scm needs tags to compute the version
+
+    - uses: actions/setup-python@v6
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Build sdist and wheel
+      run: |
+        python -m pip install --upgrade pip build twine
+        pip install .[versioning,localize]
+        doit version
+        doit localize
+        python -m build
+        python -m twine check dist/*
+
+    - name: Check distribution contents
+      run: python tests/packaging/check_dist.py dist
+
+    - name: Install each distribution into a clean virtualenv and smoke test it
+      run: |
+        VERSION=$(ls dist/*.whl | sed -E 's#.*/tabcmd-([^-]+)-.*#\1#')
+        echo "expecting version $VERSION"
+        if [ "$RUNNER_OS" = "Windows" ]; then BIN=Scripts; else BIN=bin; fi
+        for KIND in whl tar.gz; do
+          python -m venv "$RUNNER_TEMP/venv-$KIND"
+          "$RUNNER_TEMP/venv-$KIND/$BIN/python" -m pip install --upgrade pip
+          "$RUNNER_TEMP/venv-$KIND/$BIN/python" -m pip install dist/*.$KIND
+          "$RUNNER_TEMP/venv-$KIND/$BIN/python" -m pip check
+          mkdir -p "$RUNNER_TEMP/run-$KIND"
+          (cd "$RUNNER_TEMP/run-$KIND" && python "$GITHUB_WORKSPACE/tests/packaging/smoke.py" \
+            --expect-version "$VERSION" -- "$RUNNER_TEMP/venv-$KIND/$BIN/tabcmd")
+          (cd "$RUNNER_TEMP/run-$KIND" && "$RUNNER_TEMP/venv-$KIND/$BIN/python" -m tabcmd --version)
+        done

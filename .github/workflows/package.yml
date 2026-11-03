@@ -117,6 +117,17 @@ jobs:
         fi
         echo "$out" | grep -q "Max retries exceeded" || { echo "expected a connection error from requests"; exit 1; }
 
+    - name: Smoke test every command in the ${{ matrix.TARGET }} executable
+      shell: bash
+      env:
+        EXE: ${{ github.workspace }}/dist/${{ matrix.TARGET }}/${{ matrix.OUT_FILE_NAME }}
+        MAC_BINARY: Contents/MacOS/${{ matrix.APP_BINARY_FILE_NAME }}
+      run: |
+        if [ "$RUNNER_OS" = "macOS" ]; then EXE="$EXE/$MAC_BINARY"; fi
+        VERSION=$(python -m setuptools_scm)
+        mkdir "$RUNNER_TEMP/smoke" && cd "$RUNNER_TEMP/smoke"
+        python "$GITHUB_WORKSPACE/tests/packaging/smoke.py" --expect-version "$VERSION" -- "$EXE"
+
     - name: Tar app bundle for Mac
       if: matrix.TARGET == 'macos'
       run: |
